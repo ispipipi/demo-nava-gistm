@@ -1,0 +1,38 @@
+[
+  {
+    "id": "tema-1",
+    "nombre": "Conocimiento de la base de relaves",
+    "descripcion": "Caracterizacion, gobernanza tecnica y conocimiento actualizado del deposito.",
+    "criterioPrefixes": ["1.", "2."]
+  },
+  {
+    "id": "tema-2",
+    "nombre": "Gobernanza y responsabilidad",
+    "descripcion": "Roles, cuentas claras, politicas internas y aprobaciones.",
+    "criterioPrefixes": ["3.", "4."]
+  },
+  {
+    "id": "tema-3",
+    "nombre": "Planificacion y gestion del riesgo",
+    "descripcion": "Controles, escenarios de falla, planes de accion y mejora continua.",
+    "criterioPrefixes": ["5.", "6."]
+  },
+  {
+    "id": "tema-4",
+    "nombre": "Diseno, construccion y operacion",
+    "descripcion": "Criterios tecnicos, gestion operacional y control de cambios.",
+    "criterioPrefixes": ["7.", "8."]
+  },
+  {
+    "id": "tema-5",
+    "nombre": "Preparacion y respuesta ante emergencias",
+    "descripcion": "Preparacion interna, coordinacion externa, simulacros y comunidad.",
+    "criterioPrefixes": ["9.", "10."]
+  },
+  {
+    "id": "tema-6",
+    "nombre": "Revision, divulgacion y aseguramiento",
+    "descripcion": "Revision independiente, auditoria, reportabilidad y transparencia.",
+    "criterioPrefixes": ["11.", "12.", "13.", "14.", "15."]
+  }
+]
