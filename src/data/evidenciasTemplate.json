@@ -1,72 +1,632 @@
 [
-  { "id": 1, "tipo": "GOB", "descripcion": "Politica corporativa de gestion de relaves" },
-  { "id": 2, "tipo": "GOB", "descripcion": "Matriz de responsabilidades GISTM del operador" },
-  { "id": 3, "tipo": "GOB", "descripcion": "Actas de aprobacion del directorio o comite ejecutivo" },
-  { "id": 4, "tipo": "GOB", "descripcion": "Procedimiento de escalamiento de riesgos criticos" },
-  { "id": 5, "tipo": "ADM/RRHH", "descripcion": "Organigrama del equipo de relaves y soporte" },
-  { "id": 6, "tipo": "ADM/RRHH", "descripcion": "Plan anual de capacitacion para personal clave" },
-  { "id": 7, "tipo": "ADM/RRHH", "descripcion": "Registro de competencias y autorizaciones operacionales" },
-  { "id": 8, "tipo": "POL", "descripcion": "Politica de derechos humanos y relacion comunitaria" },
-  { "id": 9, "tipo": "POL", "descripcion": "Procedimiento de consulta y participacion de partes interesadas" },
-  { "id": 10, "tipo": "POL", "descripcion": "Mapa de comunidades potencialmente afectadas" },
-  { "id": 11, "tipo": "TEC", "descripcion": "Sistema de Gestion de Relaves TMS vigente" },
-  { "id": 12, "tipo": "TEC", "descripcion": "Manual de operacion, mantenimiento y vigilancia OMS" },
-  { "id": 13, "tipo": "TEC", "descripcion": "Criterios de diseno del deposito de relaves" },
-  { "id": 14, "tipo": "TEC", "descripcion": "Modelo geotecnico y geologico actualizado" },
-  { "id": 15, "tipo": "TEC", "descripcion": "Balance hidrico operacional y de cierre" },
-  { "id": 16, "tipo": "TEC", "descripcion": "Estudio de estabilidad fisica y sismica" },
-  { "id": 17, "tipo": "TEC", "descripcion": "Analisis de modos de falla del deposito" },
-  { "id": 18, "tipo": "TEC", "descripcion": "Registro de instrumentacion geotecnica" },
-  { "id": 19, "tipo": "TEC", "descripcion": "Plan de monitoreo piezometrico y deformacional" },
-  { "id": 20, "tipo": "TEC", "descripcion": "Curvas de llenado y capacidad remanente" },
-  { "id": 21, "tipo": "S&A", "descripcion": "Evaluacion de impacto ambiental aplicable" },
-  { "id": 22, "tipo": "S&A", "descripcion": "Permisos ambientales y sectoriales vigentes" },
-  { "id": 23, "tipo": "S&A", "descripcion": "Plan de manejo de aguas y contacto operacional" },
-  { "id": 24, "tipo": "S&A", "descripcion": "Plan de monitoreo ambiental aguas abajo" },
-  { "id": 25, "tipo": "S&A", "descripcion": "Registro de incidentes ambientales y acciones correctivas" },
-  { "id": 26, "tipo": "TKB", "descripcion": "Base documental historica del deposito" },
-  { "id": 27, "tipo": "TKB", "descripcion": "Registro de planos as built y revisiones" },
-  { "id": 28, "tipo": "TKB", "descripcion": "Biblioteca de estudios tecnicos y memorias de calculo" },
-  { "id": 29, "tipo": "TKB", "descripcion": "Levantamiento topografico y batimetrico actualizado" },
-  { "id": 30, "tipo": "TKB", "descripcion": "Inventario de datos maestros y trazabilidad" },
-  { "id": 31, "tipo": "TEC", "descripcion": "Plan de construccion por etapas y controles QA/QC" },
-  { "id": 32, "tipo": "TEC", "descripcion": "Registros de inspeccion de construccion" },
-  { "id": 33, "tipo": "TEC", "descripcion": "Procedimiento de control de cambios tecnicos" },
-  { "id": 34, "tipo": "TEC", "descripcion": "Programa de revision de seguridad de presas" },
-  { "id": 35, "tipo": "TEC", "descripcion": "Informes del engineer of record" },
-  { "id": 36, "tipo": "TEC", "descripcion": "Registro de recomendaciones y cierre de hallazgos" },
-  { "id": 37, "tipo": "TEC", "descripcion": "Plan de gestion de depositacion de relaves" },
-  { "id": 38, "tipo": "TEC", "descripcion": "Procedimiento de control de playa y laguna" },
-  { "id": 39, "tipo": "TEC", "descripcion": "Plan de contingencia operacional por lluvias extremas" },
-  { "id": 40, "tipo": "TEC", "descripcion": "Registro de inspecciones rutinarias del operador" },
-  { "id": 41, "tipo": "GOB", "descripcion": "Registro de auditorias internas GISTM" },
-  { "id": 42, "tipo": "GOB", "descripcion": "Plan de acciones correctivas corporativas" },
-  { "id": 43, "tipo": "GOB", "descripcion": "Comite de revision de riesgos de relaves" },
-  { "id": 44, "tipo": "GOB", "descripcion": "Reporte mensual a la alta administracion" },
-  { "id": 45, "tipo": "S&A", "descripcion": "Plan de preparacion y respuesta ante emergencias" },
-  { "id": 46, "tipo": "S&A", "descripcion": "Mapa de inundacion y zonas de impacto potencial" },
-  { "id": 47, "tipo": "S&A", "descripcion": "Protocolos de comunicacion con autoridades" },
-  { "id": 48, "tipo": "S&A", "descripcion": "Registro de simulacros y lecciones aprendidas" },
-  { "id": 49, "tipo": "S&A", "descripcion": "Plan de alerta temprana comunitaria" },
-  { "id": 50, "tipo": "S&A", "descripcion": "Inventario de recursos para respuesta a emergencia" },
-  { "id": 51, "tipo": "ADM/RRHH", "descripcion": "Contratos y alcances de consultores especializados" },
-  { "id": 52, "tipo": "ADM/RRHH", "descripcion": "Matriz de suplencias para cargos criticos" },
-  { "id": 53, "tipo": "ADM/RRHH", "descripcion": "Plan de induccion GISTM para nuevos integrantes" },
-  { "id": 54, "tipo": "POL", "descripcion": "Politica de divulgacion publica de informacion" },
-  { "id": 55, "tipo": "POL", "descripcion": "Procedimiento de gestion de reclamos comunitarios" },
-  { "id": 56, "tipo": "POL", "descripcion": "Registro de compromisos con partes interesadas" },
-  { "id": 57, "tipo": "TKB", "descripcion": "Repositorio de evidencias por criterio GISTM" },
-  { "id": 58, "tipo": "TKB", "descripcion": "Control de versiones documental" },
-  { "id": 59, "tipo": "TKB", "descripcion": "Indice maestro de informes y responsables" },
-  { "id": 60, "tipo": "TKB", "descripcion": "Ficha tecnica resumen del deposito" },
-  { "id": 61, "tipo": "TEC", "descripcion": "Plan de cierre y post cierre del deposito" },
-  { "id": 62, "tipo": "TEC", "descripcion": "Evaluacion de estabilidad para cierre" },
-  { "id": 63, "tipo": "S&A", "descripcion": "Plan de monitoreo social y ambiental de cierre" },
-  { "id": 64, "tipo": "GOB", "descripcion": "Proceso de assurance independiente" },
-  { "id": 65, "tipo": "GOB", "descripcion": "Terminos de referencia del revisor independiente" },
-  { "id": 66, "tipo": "GOB", "descripcion": "Informes de revision externa y respuesta del operador" },
-  { "id": 67, "tipo": "POL", "descripcion": "Reporte publico anual de gestion de relaves" },
-  { "id": 68, "tipo": "POL", "descripcion": "Plan de comunicacion de informacion critica" },
-  { "id": 69, "tipo": "TKB", "descripcion": "Dashboard historico de indicadores clave" },
-  { "id": 70, "tipo": "TKB", "descripcion": "Archivo de decisiones tecnicas relevantes" }
+  {
+    "id": 1,
+    "descripcion": "Carta de asignación, contrato, responsabilidad y términos de referencia del RTFE, EoR, AE, ITRB",
+    "tipo": "ADM/RRHH",
+    "nivelDocumento": "AUX",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 2,
+    "descripcion": "Evidencia de experiencia de los roles de seguridad de la instalación de relaves (CV de AE, RTFE, ITRB y EoR)",
+    "tipo": "ADM/RRHH",
+    "nivelDocumento": "AUX",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 3,
+    "descripcion": "Evidencias del proceso de contratación del EoR (Decisión tomada por Ejecutivo Responsable)",
+    "tipo": "ADM/RRHH",
+    "nivelDocumento": "EVD",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 4,
+    "descripcion": "Carta / Declaración de no conflicto de intereses (ITRB)",
+    "tipo": "ADM/RRHH",
+    "nivelDocumento": "AUX",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 5,
+    "descripcion": "Auditorías internas y externas TMS y ESMS",
+    "tipo": "GOB",
+    "nivelDocumento": "AUX",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 6,
+    "descripcion": "Carta de AE que adopta CCS",
+    "tipo": "GOB",
+    "nivelDocumento": "AUX",
+    "disponible": "No",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 7,
+    "descripcion": "Declaración de calificaciones de la empresa EoR",
+    "tipo": "GOB",
+    "nivelDocumento": "EVD",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 8,
+    "descripcion": "Evidencia de revisión ESMS",
+    "tipo": "GOB",
+    "nivelDocumento": "EVD",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 9,
+    "descripcion": "Mecanismo de reconocimiento, protección y recompensa para empleados y contratistas que denuncien problemas",
+    "tipo": "GOB",
+    "nivelDocumento": "AUX",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 10,
+    "descripcion": "Procedimiento de evaluación de desempeño y pago de incentivos a personas con responsabilidades (en la seguridad pública y en la integridad de la instalación de relaves)",
+    "tipo": "GOB",
+    "nivelDocumento": "AUX",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 11,
+    "descripcion": "Sistema de Gestión de Relaves (TMS) (incluye plan de sucesión)",
+    "tipo": "GOB",
+    "nivelDocumento": "INT",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 12,
+    "descripcion": "Compromiso de divulgación pública de información sobre seguridad",
+    "tipo": "GOB",
+    "nivelDocumento": "AUX",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 13,
+    "descripcion": "Declaración pública que confirma capacidad económica de la compañía para hacer frente al cierre",
+    "tipo": "GOB",
+    "nivelDocumento": "EVD",
+    "disponible": "NA",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 14,
+    "descripcion": "Evidencias de que AE, Junta Directiva y personas afectadas por el proyecto, revisaron los resultados de las evaluaciones a ESMS y TMS",
+    "tipo": "GOB",
+    "nivelDocumento": "EVD",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 15,
+    "descripcion": "Evidencias de divulgación de la información según lo indicado en el requisito 15.1",
+    "tipo": "GOB",
+    "nivelDocumento": "EVD",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 16,
+    "descripcion": "Evidencias de involucramiento de trabajadores con experiencia en gestión de relaves",
+    "tipo": "GOB",
+    "nivelDocumento": "EVD",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 17,
+    "descripcion": "Evidencias de mecanismos utilizados para promover la colaboración multifuncional (ej. talleres de integración, reuniones, etc. )",
+    "tipo": "GOB",
+    "nivelDocumento": "EVD",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 18,
+    "descripcion": "Evidencias de reuniones / comunicaciones entre EoR/AE/Junta directiva (actas de reuniones, etc.)",
+    "tipo": "GOB",
+    "nivelDocumento": "EVD",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 19,
+    "descripcion": "Evidencias de reuniones / comunicaciones entre EoR/AE/RTFE (actas de reuniones, etc.)",
+    "tipo": "GOB",
+    "nivelDocumento": "EVD",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 20,
+    "descripcion": "Evidencias de reuniones / comunicaciones entre EoR/RTFE/Equipos internos (actas de reuniones, etc.)",
+    "tipo": "GOB",
+    "nivelDocumento": "EVD",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 21,
+    "descripcion": "Evidencias de reuniones / comunicaciones entre ITRB/AE (actas de reuniones, etc.)",
+    "tipo": "GOB",
+    "nivelDocumento": "EVD",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 22,
+    "descripcion": "Evidencias de reuniones / comunicaciones entre RTFE/AE (actas de reuniones, etc.)",
+    "tipo": "GOB",
+    "nivelDocumento": "EVD",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 23,
+    "descripcion": "Política y procedimiento de gestión de información pública",
+    "tipo": "POL",
+    "nivelDocumento": "EVD",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 24,
+    "descripcion": "Debida diligencia del impacto de los derechos humanos en el área potencialmente afectada por los riesgos del TSF",
+    "tipo": "S&A",
+    "nivelDocumento": "INT",
+    "disponible": "No",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 25,
+    "descripcion": "Política corporativa de gestión de relaves con compromiso con alineamiento al GISTM y derechos humanos (publicada y difundida)",
+    "tipo": "POL",
+    "nivelDocumento": "INT",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 26,
+    "descripcion": "Evidencia de identificación de grupos indígenas que pueden verse afectados",
+    "tipo": "S&A",
+    "nivelDocumento": "EVD",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 27,
+    "descripcion": "Evidencia de no afectación pueblos indígenas",
+    "tipo": "S&A",
+    "nivelDocumento": "EVD",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 28,
+    "descripcion": "Medidas y planes de mitigación para abarcar los impactos materiales (Social, ambiental y económicos)",
+    "tipo": "S&A",
+    "nivelDocumento": "AUX",
+    "disponible": "No",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 29,
+    "descripcion": "Plan de recuperación a largo plazo (post falla)",
+    "tipo": "S&A",
+    "nivelDocumento": "AUX",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 30,
+    "descripcion": "Programa de capacitación EPRP",
+    "tipo": "S&A",
+    "nivelDocumento": "AUX",
+    "disponible": "No",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 31,
+    "descripcion": "Evidencia de capacitaciones EPRP",
+    "tipo": "S&A",
+    "nivelDocumento": "EVD",
+    "disponible": "No",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 32,
+    "descripcion": "Evidencias de involucramiento en el EPRP de organizaciones identificadas",
+    "tipo": "S&A",
+    "nivelDocumento": "EVD",
+    "disponible": "No",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 33,
+    "descripcion": "Informe de exposición y vulnerabilidad de comunidades en riesgo",
+    "tipo": "S&A",
+    "nivelDocumento": "AUX",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 34,
+    "descripcion": "Procedimientos de quejas y reclamos de las comunidades de interés relacionados con el TSF (alineado con UNGP)",
+    "tipo": "S&A",
+    "nivelDocumento": "AUX",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 35,
+    "descripcion": "Programa educativo de capacitación a trabajadores con roles de prevención de fallas",
+    "tipo": "S&A",
+    "nivelDocumento": "EVD",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 36,
+    "descripcion": "Evaluación de Impacto Ambiental y Socio-Económico (EIA) del área potencialmente afectada por el TSF",
+    "tipo": "S&A",
+    "nivelDocumento": "INT",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 37,
+    "descripcion": "Sistema de Gestión Medioambiental y Social (ESMS)",
+    "tipo": "S&A",
+    "nivelDocumento": "INT",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 38,
+    "descripcion": "Reporte de Bases de Diseño (DBR)",
+    "tipo": "TEC",
+    "nivelDocumento": "INT",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 39,
+    "descripcion": "Análisis de alternativas para selección de sitios, tecnologías y estrategias para la gestión de la instalación de relaves",
+    "tipo": "TEC",
+    "nivelDocumento": "AUX",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 40,
+    "descripcion": "Análisis de estabilidad y deformación de la presa de relaves",
+    "tipo": "TEC",
+    "nivelDocumento": "INT",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 41,
+    "descripcion": "Análisis de filtraciones",
+    "tipo": "TEC",
+    "nivelDocumento": "INT",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 42,
+    "descripcion": "Balance de aguas",
+    "tipo": "TEC",
+    "nivelDocumento": "INT",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 43,
+    "descripcion": "Estudio de Rotura de Presas (DBA)",
+    "tipo": "TEC",
+    "nivelDocumento": "INT",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 44,
+    "descripcion": "Informe de evaluación del impacto del cambio climático (CCIA)",
+    "tipo": "TEC",
+    "nivelDocumento": "INT",
+    "disponible": "No",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 45,
+    "descripcion": "Informes de ITRB",
+    "tipo": "TEC",
+    "nivelDocumento": "INT",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 46,
+    "descripcion": "Lista de distribución OMS",
+    "tipo": "TEC",
+    "nivelDocumento": "AUX",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 47,
+    "descripcion": "Manual de Operaciones, Mantenimiento y Vigilancia (OMS) (Incluido TARPs)",
+    "tipo": "TEC",
+    "nivelDocumento": "INT",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 48,
+    "descripcion": "Plan de cierre (incluido el diseño conceptual del TSF)",
+    "tipo": "TEC",
+    "nivelDocumento": "INT",
+    "disponible": "No",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 49,
+    "descripcion": "Plan de Gestión de Aguas (WMP o WMR)",
+    "tipo": "TEC",
+    "nivelDocumento": "INT",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 50,
+    "descripcion": "Plan de Preparación y Respuesta ante Emergencias (EPRP)",
+    "tipo": "TEC",
+    "nivelDocumento": "INT",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 51,
+    "descripcion": "Programa de capacitación OMS",
+    "tipo": "TEC",
+    "nivelDocumento": "AUX",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 52,
+    "descripcion": "Reporte de Análisis de Riesgos (RAR)",
+    "tipo": "TEC",
+    "nivelDocumento": "INT",
+    "disponible": "No",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 53,
+    "descripcion": "Reportes de Diseño",
+    "tipo": "TEC",
+    "nivelDocumento": "INT",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 54,
+    "descripcion": "Reporte sobre la clasificación de consecuencias de falla del TSF (CCS)",
+    "tipo": "TEC",
+    "nivelDocumento": "INT",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 55,
+    "descripcion": "Evidencias de simulacros EPRP (externos con comunidad de interés)",
+    "tipo": "TEC",
+    "nivelDocumento": "AUX",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 56,
+    "descripcion": "Evidencias de simulacros EPRP (internos)",
+    "tipo": "TEC",
+    "nivelDocumento": "AUX",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 57,
+    "descripcion": "Evidencia de revisión al diseño",
+    "tipo": "TEC",
+    "nivelDocumento": "EVD",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 58,
+    "descripcion": "Base de conocimiento clima",
+    "tipo": "TKB",
+    "nivelDocumento": "AUX",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 59,
+    "descripcion": "Base de conocimiento geología (Informe geológico geotécnico)",
+    "tipo": "TKB",
+    "nivelDocumento": "AUX",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 60,
+    "descripcion": "Base de conocimiento geomorfología",
+    "tipo": "TKB",
+    "nivelDocumento": "AUX",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 61,
+    "descripcion": "Base de conocimiento geoquímica (Caracterización geoquímica)",
+    "tipo": "TKB",
+    "nivelDocumento": "AUX",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 62,
+    "descripcion": "Base de conocimiento geotecnia (Caracterización geotécnica)",
+    "tipo": "TKB",
+    "nivelDocumento": "AUX",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 63,
+    "descripcion": "Base de conocimiento hidrología (Estudio hidrológico)",
+    "tipo": "TKB",
+    "nivelDocumento": "AUX",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 64,
+    "descripcion": "Base de conocimiento sismicidad (Estudio de peligro sísmico)",
+    "tipo": "TKB",
+    "nivelDocumento": "AUX",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 65,
+    "descripcion": "Estudio de Análisis de Modos de Falla y Efectos (FMEA) (incluye controles críticos)",
+    "tipo": "TEC",
+    "nivelDocumento": "AUX",
+    "disponible": "No",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 66,
+    "descripcion": "Estudio y análisis para la determinación de condición ALARP",
+    "tipo": "TEC",
+    "nivelDocumento": "AUX",
+    "disponible": "No",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 67,
+    "descripcion": "Base de conocimiento hidrogeología (Estudio hidrogeológico)",
+    "tipo": "TKB",
+    "nivelDocumento": "AUX",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 68,
+    "descripcion": "Plan de depositación a largo plazo",
+    "tipo": "TEC",
+    "nivelDocumento": "AUX",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 69,
+    "descripcion": "Plan de depositación a corto plazo (shorterm)",
+    "tipo": "TEC",
+    "nivelDocumento": "AUX",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  },
+  {
+    "id": 70,
+    "descripcion": "Programas de control de calidad (QC) y aseguramiento de calidad (QA) de los procesos de construcción y operación del TSF",
+    "tipo": "TEC",
+    "nivelDocumento": "AUX",
+    "disponible": "Si",
+    "responsable": "",
+    "referenciaDocumental": ""
+  }
 ]

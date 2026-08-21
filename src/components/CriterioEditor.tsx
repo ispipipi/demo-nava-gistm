@@ -2,7 +2,17 @@ import { Brecha, Cumplimiento, PlanAccion } from "../types";
 import { useProjectStore } from "../store/useProjectStore";
 import { formatPct, getSemaphore } from "../lib/semaphore";
 
-const planOptions: Array<PlanAccion | ""> = ["", "Cumple", "Cumple con compromiso", "Actualizar", "Recopilar-Elaborar", "NA"];
+const planOptions: Array<PlanAccion | ""> = [
+  "",
+  "Cumple",
+  "Cumple con compromiso",
+  "Cumple con plan",
+  "Actualizar",
+  "Modificar",
+  "Recopilar/Elaborar",
+  "No cumple",
+  "NA"
+];
 const pctOptions: Array<Cumplimiento> = [0, 0.25, 0.5, 0.75, 1, "NA"];
 
 export function CriterioEditor({ projectId, brecha }: { projectId: string; brecha: Brecha }) {

@@ -1,4 +1,12 @@
-export type PlanAccion = "Cumple" | "Cumple con compromiso" | "Actualizar" | "Recopilar-Elaborar" | "NA";
+export type PlanAccion =
+  | "Cumple"
+  | "Cumple con compromiso"
+  | "Cumple con plan"
+  | "Actualizar"
+  | "Modificar"
+  | "Recopilar/Elaborar"
+  | "No cumple"
+  | "NA";
 export type SemaforoEstado = "verde" | "amarillo" | "naranjo" | "rojo" | "gris";
 export type Rol = "analista" | "cliente";
 export type Cumplimiento = number | "NA";
@@ -9,6 +17,7 @@ export type EvidenciaTemplate = {
   id: number;
   descripcion: string;
   tipo: TipoEvidencia;
+  nivelDocumento?: string;
 };
 
 export type Evidencia = EvidenciaTemplate & {
@@ -23,13 +32,21 @@ export type EvidenciaCriterioTemplate = {
 };
 
 export type Brecha = {
+  excelRow?: number;
   evidenciaId: number;
+  documento?: string;
   criterio: string;
   cumplimiento: Cumplimiento;
   plan: PlanAccion | null;
+  brechaPlan?: string;
   responsableBrecha?: string;
   fechaCompromiso?: string;
   referenciaDocumental?: string;
+};
+
+export type BrechaKey = {
+  evidenciaId: number;
+  criterio: string;
 };
 
 export type Tema = {

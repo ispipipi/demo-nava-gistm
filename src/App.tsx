@@ -1,3 +1,4 @@
+import { BrechaPanel } from "./components/BrechaPanel";
 import { ClientDashboard } from "./components/ClientDashboard";
 import { CriteriaDashboard } from "./components/CriteriaDashboard";
 import { FichaPanel } from "./components/FichaPanel";
@@ -7,7 +8,7 @@ import { getProjectPct } from "./lib/aggregations";
 import { formatPct, getSemaphore } from "./lib/semaphore";
 
 function App() {
-  const { role, proyectos, currentProjectId, selectedEvidenceId } = useProjectStore();
+  const { role, proyectos, currentProjectId, selectedEvidenceId, selectedBrecha } = useProjectStore();
   const project = proyectos.find((item) => item.id === currentProjectId) ?? proyectos[0];
   const projectPct = getProjectPct(project.brechas);
   const semaforo = getSemaphore(projectPct);
@@ -33,6 +34,7 @@ function App() {
 
         {role === "cliente" ? <ClientDashboard project={project} /> : <CriteriaDashboard project={project} />}
       </main>
+      {role === "analista" && selectedBrecha !== null && <BrechaPanel project={project} brechaKey={selectedBrecha} />}
       {role === "analista" && selectedEvidenceId !== null && <FichaPanel project={project} evidenceId={selectedEvidenceId} />}
     </div>
   );

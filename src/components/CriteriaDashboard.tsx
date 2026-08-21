@@ -4,7 +4,7 @@ import { formatPct, getSemaphore } from "../lib/semaphore";
 import { useProjectStore } from "../store/useProjectStore";
 import { CriterioDetalleResumen, CriterioGrupoResumen, Proyecto } from "../types";
 
-type DrillLevel = "groups" | "details" | "breaches";
+type DrillLevel = "groups" | "details" | "fichas";
 
 function ringStyle(value: number | null) {
   const pct = value === null ? 0 : Math.round(value * 100);
@@ -35,7 +35,7 @@ function getGroupLabel(groupId: string) {
 }
 
 export function CriteriaDashboard({ project }: { project: Proyecto }) {
-  const selectEvidence = useProjectStore((state) => state.selectEvidence);
+  const selectBrecha = useProjectStore((state) => state.selectBrecha);
   const groups = useMemo(() => getCriterionGroupSummary(project.evidencias, project.brechas), [project]);
   const [level, setLevel] = useState<DrillLevel>("groups");
   const [activeGroupId, setActiveGroupId] = useState<string | null>(null);
@@ -56,7 +56,7 @@ export function CriteriaDashboard({ project }: { project: Proyecto }) {
 
   function selectDetail(detail: CriterioDetalleResumen) {
     setActiveDetailId(detail.id);
-    setLevel("breaches");
+    setLevel("fichas");
     moveToTop();
   }
 
@@ -114,7 +114,7 @@ export function CriteriaDashboard({ project }: { project: Proyecto }) {
         </section>
       )}
 
-      {level === "breaches" && activeGroup && activeDetail && (
+      {level === "fichas" && activeGroup && activeDetail && (
         <section className="associated-panel single-panel">
           <div className="navigation-strip">
             <button className="back-action" onClick={backToDetails}>← {activeGroup.nombre}</button>
@@ -122,10 +122,10 @@ export function CriteriaDashboard({ project }: { project: Proyecto }) {
           </div>
           <div className="panel-title">
             <div>
-              <p className="eyebrow">Brechas asociadas</p>
+              <p className="eyebrow">Fichas asociadas</p>
               <h2>{activeDetail.id}</h2>
             </div>
-            <span className="status-badge badge-gray">{activeDetail.brechas.length} brechas</span>
+            <span className="status-badge badge-gray">{activeDetail.brechas.length} fichas</span>
           </div>
 
           <div className="associated-list">
@@ -133,21 +133,21 @@ export function CriteriaDashboard({ project }: { project: Proyecto }) {
               const evidencia = project.evidencias.find((item) => item.id === brecha.evidenciaId);
               const pct = typeof brecha.cumplimiento === "number" ? brecha.cumplimiento : null;
               const semaforo = getSemaphore(pct);
-              const key = `${brecha.evidenciaId}-${brecha.criterio}`;
               if (!evidencia) return null;
               return (
-                <button className="associated-card" key={key} onClick={() => selectEvidence(evidencia.id)}>
+                <button
+                  className="associated-card"
+                  key={`${brecha.evidenciaId}-${brecha.criterio}`}
+                  onClick={() => selectBrecha({ evidenciaId: brecha.evidenciaId, criterio: brecha.criterio })}
+                >
                   <span className={`phase-dot dot-${semaforo.estado}`} />
                   <span className="associated-main">
                     <strong>{brecha.criterio} · {evidencia.descripcion}</strong>
-                    <small>
-                      Evidencia {String(evidencia.id).padStart(2, "0")} · {evidencia.tipo} · {brecha.plan ?? "Sin plan"}
-                      {brecha.responsableBrecha ? ` · ${brecha.responsableBrecha}` : ""}
-                    </small>
+                    <small>{evidencia.tipo} · evidencia {String(evidencia.id).padStart(2, "0")} · {brecha.plan ?? "Sin plan"}</small>
                   </span>
                   <span className="associated-score">
                     <strong>{formatPct(pct)}</strong>
-                    <small>{brecha.fechaCompromiso || semaforo.label}</small>
+                    <small>{brecha.responsableBrecha || "Sin responsable"}</small>
                   </span>
                   <span className="chevron">›</span>
                 </button>
