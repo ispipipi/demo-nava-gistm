@@ -1,4 +1,4 @@
-import { Brecha, Evidencia, Tema, TemaResumen } from "../types";
+import { Brecha, CriterioGrupoResumen, Evidencia, Tema, TemaResumen } from "../types";
 
 export function averageCumplimiento(values: Array<number | "NA" | null | undefined>) {
   const numeric = values.filter((value): value is number => typeof value === "number" && Number.isFinite(value));
@@ -61,4 +61,49 @@ export function getTemaResumen(temas: Tema[], evidencias: Evidencia[], brechas: 
 
 export function clampPct(value: number) {
   return Math.min(1, Math.max(0, value));
+}
+
+export function getCriterionRoot(criterio: string) {
+  return criterio.split(".")[0] ?? criterio;
+}
+
+export function getCriterionDetail(criterio: string) {
+  return criterio.split(" - ")[0] ?? criterio;
+}
+
+export function getCriterionGroupSummary(evidencias: Evidencia[], brechas: Brecha[]): CriterioGrupoResumen[] {
+  const evidenciasById = new Map(evidencias.map((evidencia) => [evidencia.id, evidencia]));
+
+  return Array.from({ length: 15 }, (_, index) => {
+    const grupo = String(index + 1);
+    const groupBrechas = brechas.filter((brecha) => getCriterionRoot(brecha.criterio) === grupo);
+    const detailIds = Array.from(new Set(groupBrechas.map((brecha) => getCriterionDetail(brecha.criterio)))).sort((a, b) =>
+      a.localeCompare(b, "es", { numeric: true })
+    );
+    const detalles = detailIds.map((detailId) => {
+      const detailBrechas = groupBrechas.filter((brecha) => getCriterionDetail(brecha.criterio) === detailId);
+      const detailEvidenceIds = Array.from(new Set(detailBrechas.map((brecha) => brecha.evidenciaId)));
+      const detailEvidencias = detailEvidenceIds
+        .map((id) => evidenciasById.get(id))
+        .filter((evidencia): evidencia is Evidencia => Boolean(evidencia));
+      return {
+        id: detailId,
+        grupo,
+        pctPromedio: averageCumplimiento(detailBrechas.map((brecha) => brecha.cumplimiento)),
+        brechas: detailBrechas,
+        evidencias: detailEvidencias,
+        brechasAbiertas: detailBrechas.filter((brecha) => brecha.plan && brecha.plan !== "Cumple" && brecha.plan !== "NA").length
+      };
+    });
+    const evidenceIds = new Set(groupBrechas.map((brecha) => brecha.evidenciaId));
+
+    return {
+      id: grupo,
+      nombre: `Criterio ${grupo}`,
+      pctPromedio: averageCumplimiento(groupBrechas.map((brecha) => brecha.cumplimiento)),
+      detalles,
+      evidenciasCount: evidenceIds.size,
+      brechasAbiertas: groupBrechas.filter((brecha) => brecha.plan && brecha.plan !== "Cumple" && brecha.plan !== "NA").length
+    };
+  });
 }

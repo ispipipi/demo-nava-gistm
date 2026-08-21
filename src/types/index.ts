@@ -61,3 +61,21 @@ export type TemaResumen = Tema & {
   evidenciasCount: number;
   brechasAbiertas: number;
 };
+
+export type CriterioDetalleResumen = {
+  id: string;
+  grupo: string;
+  pctPromedio: number | null;
+  brechas: Brecha[];
+  evidencias: Evidencia[];
+  brechasAbiertas: number;
+};
+
+export type CriterioGrupoResumen = {
+  id: string;
+  nombre: string;
+  pctPromedio: number | null;
+  detalles: CriterioDetalleResumen[];
+  evidenciasCount: number;
+  brechasAbiertas: number;
+};

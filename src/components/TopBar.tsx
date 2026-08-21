@@ -10,7 +10,7 @@ export function TopBar({ project }: { project: Proyecto }) {
     <header className="sticky top-0 z-30 border-b border-line/80 bg-white/92 backdrop-blur">
       <div className="mx-auto grid min-h-[72px] w-[min(100%-32px,1480px)] grid-cols-[auto_1fr_auto] items-center gap-4">
         <div className="brand-lockup">
-          <div className="brand-mark">N</div>
+          <img className="brand-logo" src={`${import.meta.env.BASE_URL}nava-logo.png`} alt="Nava" />
           <div>
             <strong>Nava GISTM</strong>
             <span>{project.nombre}</span>

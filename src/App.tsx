@@ -1,6 +1,6 @@
 import { ClientDashboard } from "./components/ClientDashboard";
+import { CriteriaDashboard } from "./components/CriteriaDashboard";
 import { FichaPanel } from "./components/FichaPanel";
-import { MatrixView } from "./components/MatrixView";
 import { TopBar } from "./components/TopBar";
 import { useProjectStore } from "./store/useProjectStore";
 import { getProjectPct } from "./lib/aggregations";
@@ -19,7 +19,7 @@ function App() {
         <section className="summary-band">
           <div>
             <p className="eyebrow">GISTM Tracker Nava</p>
-            <h1>{role === "cliente" ? "Dashboard ejecutivo del cliente" : "Matriz de gestion y evidencias"}</h1>
+            <h1>{role === "cliente" ? "Dashboard ejecutivo del cliente" : "Indicadores por criterio GISTM"}</h1>
             <p>
               {project.cliente} · evaluacion {project.fechaEvaluacion} · {project.evidencias.length} evidencias · {project.brechas.length} relaciones evidencia-criterio
             </p>
@@ -31,7 +31,7 @@ function App() {
           </div>
         </section>
 
-        {role === "cliente" ? <ClientDashboard project={project} /> : <MatrixView project={project} />}
+        {role === "cliente" ? <ClientDashboard project={project} /> : <CriteriaDashboard project={project} />}
       </main>
       {role === "analista" && selectedEvidenceId !== null && <FichaPanel project={project} evidenceId={selectedEvidenceId} />}
     </div>
