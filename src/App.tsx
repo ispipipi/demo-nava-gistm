@@ -2,6 +2,7 @@ import { BrechaPanel } from "./components/BrechaPanel";
 import { ClientDashboard } from "./components/ClientDashboard";
 import { CriteriaDashboard } from "./components/CriteriaDashboard";
 import { FichaPanel } from "./components/FichaPanel";
+import { MentatCopilot } from "./components/MentatCopilot";
 import { TopBar } from "./components/TopBar";
 import { useProjectStore } from "./store/useProjectStore";
 import { getProjectPct } from "./lib/aggregations";
@@ -34,6 +35,7 @@ function App() {
 
         {role === "cliente" ? <ClientDashboard project={project} /> : <CriteriaDashboard project={project} />}
       </main>
+      <MentatCopilot project={project} />
       {role === "analista" && selectedBrecha !== null && <BrechaPanel project={project} brechaKey={selectedBrecha} />}
       {role === "analista" && selectedEvidenceId !== null && <FichaPanel project={project} evidenceId={selectedEvidenceId} />}
     </div>
