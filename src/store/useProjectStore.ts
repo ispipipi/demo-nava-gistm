@@ -99,7 +99,7 @@ export const useProjectStore = create<ProjectState>()(
   persist(
     (set) => ({
       ...initialState(),
-      setRole: (role) => set({ role, selectedEvidenceId: role === "cliente" ? null : undefined, selectedBrecha: role === "cliente" ? null : undefined }),
+      setRole: (role) => set({ role, selectedEvidenceId: null, selectedBrecha: null }),
       setCurrentProject: (projectId) => set({ currentProjectId: projectId, selectedEvidenceId: null, selectedBrecha: null }),
       createProject: (cliente) => {
         const project = buildBlankProject(cliente);
@@ -146,7 +146,7 @@ export const useProjectStore = create<ProjectState>()(
       resetDemo: () => set(initialState())
     }),
     {
-      name: "nava-gistm-demo-v5-fast-navigation",
+      name: "nava-gistm-demo-v6-safe-navigation",
       partialize: () => ({})
     }
   )
