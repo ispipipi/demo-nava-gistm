@@ -25,8 +25,8 @@ function formatDate(value: string) {
 
 function ProgressChart({ points }: { points: ProgressPoint[] }) {
   const width = 620;
-  const height = 250;
-  const padding = { top: 22, right: 22, bottom: 42, left: 44 };
+  const height = 190;
+  const padding = { top: 18, right: 20, bottom: 32, left: 40 };
   const chartWidth = width - padding.left - padding.right;
   const chartHeight = height - padding.top - padding.bottom;
   const x = (index: number) => padding.left + (chartWidth / Math.max(1, points.length - 1)) * index;
@@ -48,7 +48,7 @@ function ProgressChart({ points }: { points: ProgressPoint[] }) {
         <polyline className="real-line" points={realPath} />
         {points.map((point, index) => (
           <g key={point.label}>
-            <text className="month-label" x={x(index)} y={height - 13}>{point.label}</text>
+            <text className="month-label" x={x(index)} y={height - 10}>{point.label}</text>
             <circle className="expected-dot" cx={x(index)} cy={y(point.expected)} r="4" />
             {point.real !== null && <circle className="real-dot" cx={x(index)} cy={y(point.real)} r="5" />}
           </g>

@@ -1054,7 +1054,7 @@
   }
 
   .chart-panel {
-    min-height: 390px;
+    min-height: 0;
   }
 
   .management-chart {
@@ -1065,7 +1065,9 @@
 
   .management-chart svg {
     width: 100%;
-    min-height: 260px;
+    height: auto;
+    max-height: 230px;
+    aspect-ratio: 620 / 190;
     border: 1px solid var(--line);
     border-radius: 8px;
     background:
@@ -1080,7 +1082,7 @@
 
   .management-chart text {
     fill: var(--muted);
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
   }
 
@@ -1093,7 +1095,7 @@
     fill: none;
     stroke-linecap: round;
     stroke-linejoin: round;
-    stroke-width: 4;
+    stroke-width: 3;
   }
 
   .expected-line {
@@ -1108,13 +1110,13 @@
   .expected-dot {
     fill: #fff;
     stroke: #d4a24c;
-    stroke-width: 3;
+    stroke-width: 2.5;
   }
 
   .real-dot {
     fill: var(--forest);
     stroke: #fff;
-    stroke-width: 3;
+    stroke-width: 2.5;
   }
 
   .chart-legend {
@@ -1871,7 +1873,7 @@
   }
 
   .management-chart svg {
-    min-height: 220px;
+    max-height: 190px;
   }
 
   .owner-filter {
