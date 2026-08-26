@@ -85,7 +85,7 @@ function buildP25006Project(): Proyecto {
 
 function initialState() {
   return {
-    role: "analista" as Rol,
+    role: "cliente" as Rol,
     proyectos: [buildP25006Project()],
     currentProjectId: "p25-006",
     selectedEvidenceId: null,
@@ -108,7 +108,7 @@ export const useProjectStore = create<ProjectState>()(
           currentProjectId: project.id,
           selectedEvidenceId: null,
           selectedBrecha: null,
-          role: "analista"
+          role: "cliente"
         }));
       },
       selectEvidence: (evidenceId) => set({ selectedEvidenceId: evidenceId, selectedBrecha: null }),
@@ -146,7 +146,7 @@ export const useProjectStore = create<ProjectState>()(
       resetDemo: () => set(initialState())
     }),
     {
-      name: "nava-gistm-demo-v2-real"
+      name: "nava-gistm-demo-v4-management-menu"
     }
   )
 );

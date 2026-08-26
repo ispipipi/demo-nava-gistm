@@ -874,6 +874,96 @@
     gap: 16px;
   }
 
+  .management-shell {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+  }
+
+  .management-sidebar {
+    position: sticky;
+    top: 92px;
+    display: grid;
+    gap: 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+    padding: 14px;
+    box-shadow: 0 10px 28px rgba(32, 58, 85, 0.06);
+  }
+
+  .management-sidebar h2 {
+    margin: 3px 0 0;
+    color: var(--ink);
+    font-size: 18px;
+    line-height: 1.15;
+  }
+
+  .management-sidebar nav,
+  .management-content {
+    display: grid;
+    gap: 12px;
+  }
+
+  .management-sidebar button {
+    display: grid;
+    width: 100%;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: linear-gradient(180deg, #fff, var(--wash));
+    color: var(--graphite);
+    padding: 12px;
+    text-align: left;
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  }
+
+  .management-sidebar button:hover {
+    border-color: rgba(23, 107, 88, 0.28);
+    transform: translateY(-1px);
+  }
+
+  .management-sidebar button.active {
+    border-color: rgba(23, 107, 88, 0.36);
+    background: #f2fbf7;
+    box-shadow: inset 3px 0 0 var(--forest);
+  }
+
+  .management-sidebar button strong,
+  .management-sidebar button small {
+    display: block;
+    min-width: 0;
+  }
+
+  .management-sidebar button strong {
+    overflow: hidden;
+    color: var(--ink);
+    font-size: 13px;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .management-sidebar button small {
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 11px;
+  }
+
+  .management-sidebar button b {
+    min-width: 44px;
+    border-radius: 999px;
+    background: var(--mist);
+    color: var(--forest);
+    padding: 5px 8px;
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+  }
+
   .management-hero,
   .management-panel {
     border: 1px solid var(--line);
@@ -888,6 +978,10 @@
     align-items: center;
     gap: 18px;
     padding: 20px;
+  }
+
+  .management-hero.compact-hero {
+    grid-template-columns: minmax(0, 0.8fr) minmax(520px, 1fr);
   }
 
   .management-hero h2 {
@@ -1676,6 +1770,7 @@
   .tema-grid.compact,
   .criteria-grid,
   .subcriteria-grid,
+  .management-shell,
   .management-hero,
   .management-grid,
   .management-grid.lower,
@@ -1685,6 +1780,21 @@
 
   .side-panel {
     position: static;
+  }
+
+  .management-sidebar {
+    position: static;
+  }
+
+  .management-sidebar nav {
+    grid-template-columns: repeat(5, minmax(190px, 1fr));
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  .management-sidebar nav::-webkit-scrollbar {
+    display: none;
   }
 
   .client-hero,
@@ -1766,6 +1876,16 @@
 
   .owner-filter {
     width: 100%;
+  }
+
+  .management-sidebar nav {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(190px, 78vw);
+  }
+
+  .management-sidebar button strong {
+    white-space: normal;
   }
 
   .mentat-launcher {

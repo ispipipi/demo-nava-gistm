@@ -3,7 +3,7 @@ import { Rol } from "../types";
 
 const roles: Array<{ value: Rol; label: string }> = [
   { value: "analista", label: "Analista" },
-  { value: "cliente", label: "Cliente" }
+  { value: "cliente", label: "Dashboard gerencial" }
 ];
 
 export function RoleToggle() {
