@@ -17,8 +17,8 @@ const pctOptions: Array<Cumplimiento> = [0, 0.25, 0.5, 0.75, 1, "NA"];
 
 export function BrechaPanel({ project, brechaKey }: { project: Proyecto; brechaKey: BrechaKey }) {
   const { selectBrecha, updateBrecha } = useProjectStore();
-  const brecha = project.brechas.find((item) => item.evidenciaId === brechaKey.evidenciaId && item.criterio === brechaKey.criterio);
-  const evidencia = project.evidencias.find((item) => item.id === brechaKey.evidenciaId);
+  const brecha = project.brechas.find((item) => item && item.evidenciaId === brechaKey.evidenciaId && item.criterio === brechaKey.criterio);
+  const evidencia = project.evidencias.find((item) => item && item.id === brechaKey.evidenciaId);
 
   if (!brecha || !evidencia) return null;
 

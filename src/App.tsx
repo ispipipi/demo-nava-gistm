@@ -13,6 +13,11 @@ function App() {
   const project = proyectos.find((item) => item.id === currentProjectId) ?? proyectos[0];
   const projectPct = getProjectPct(project.brechas);
   const semaforo = getSemaphore(projectPct);
+  const validSelectedBrecha =
+    selectedBrecha !== null &&
+    project.brechas.some((item) => item && item.evidenciaId === selectedBrecha.evidenciaId && item.criterio === selectedBrecha.criterio);
+  const validSelectedEvidenceId =
+    selectedEvidenceId !== null && project.evidencias.some((item) => item && item.id === selectedEvidenceId);
 
   return (
     <div className="min-h-screen bg-app text-ink">
@@ -36,8 +41,8 @@ function App() {
         {role === "cliente" ? <ClientDashboard project={project} /> : <CriteriaDashboard project={project} />}
       </main>
       <MentatCopilot project={project} />
-      {role === "analista" && selectedBrecha !== null && <BrechaPanel project={project} brechaKey={selectedBrecha} />}
-      {role === "analista" && selectedEvidenceId !== null && <FichaPanel project={project} evidenceId={selectedEvidenceId} />}
+      {role === "analista" && validSelectedBrecha && <BrechaPanel project={project} brechaKey={selectedBrecha} />}
+      {role === "analista" && validSelectedEvidenceId && <FichaPanel project={project} evidenceId={selectedEvidenceId} />}
     </div>
   );
 }

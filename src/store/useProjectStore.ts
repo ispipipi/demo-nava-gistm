@@ -146,7 +146,8 @@ export const useProjectStore = create<ProjectState>()(
       resetDemo: () => set(initialState())
     }),
     {
-      name: "nava-gistm-demo-v4-management-menu"
+      name: "nava-gistm-demo-v5-fast-navigation",
+      partialize: () => ({})
     }
   )
 );
