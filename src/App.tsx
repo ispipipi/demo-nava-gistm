@@ -21,7 +21,7 @@ function App() {
         <section className="summary-band">
           <div>
             <p className="eyebrow">GISTM Tracker Nava</p>
-            <h1>{role === "cliente" ? "Dashboard ejecutivo del cliente" : "Indicadores por criterio GISTM"}</h1>
+            <h1>{role === "cliente" ? "Dashboard gerencial GISTM" : "Indicadores por criterio GISTM"}</h1>
             <p>
               {project.cliente} · evaluacion {project.fechaEvaluacion} · {project.evidencias.length} evidencias · {project.brechas.length} relaciones evidencia-criterio
             </p>
