@@ -24,6 +24,7 @@ export function AppShell({ project, view, insights, onViewChange, onOpenMentat, 
   children: ReactNode;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const isMmgProject = project.id === "mmg-lb-tsf1";
   const viewItems = [...managementItems, { view: "analista" as const, label: "Analista", icon: "fact_check" }];
   const counts: Partial<Record<AppView, string>> = {
     avance: insights.gapPct === null ? "NA" : `${insights.gapPct > 0 ? "+" : ""}${Math.round(insights.gapPct * 100)} pts`,
@@ -51,8 +52,8 @@ export function AppShell({ project, view, insights, onViewChange, onOpenMentat, 
       <div className="nava-layout">
         <button className={`nava-scrim${mobileOpen ? " is-visible" : ""}`} type="button" aria-label="Cerrar menú" onClick={() => setMobileOpen(false)} />
         <aside className={`nava-sidebar${mobileOpen ? " is-open" : ""}`} aria-label="Navegación principal">
-          <a className="nava-sidebar__brand" href="./" aria-label="GISTM Tracker Nava, inicio">
-            <img src={`${import.meta.env.BASE_URL}nava-logo.png`} alt="Nava" />
+          <a className={`nava-sidebar__brand${isMmgProject ? " nava-sidebar__brand--client" : ""}`} href="./" aria-label={`GISTM Tracker ${isMmgProject ? "MMG" : "Nava"}, inicio`}>
+            <img src={`${import.meta.env.BASE_URL}${isMmgProject ? "mmg-las-bambas-logo.jpeg" : "nava-logo.png"}`} alt={isMmgProject ? "MMG, We mine for progress" : "Nava"} />
             <span>GISTM Tracker</span>
           </a>
           <div className="nava-sidebar__project"><ProjectSelector /></div>

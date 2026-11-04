@@ -106,6 +106,9 @@
 .nava-sidebar { position: sticky; top: 64px; display: flex; height: calc(100vh - 64px); min-height: 520px; flex-direction: column; padding: 18px 14px 14px; background: #0f3d37; color: #fff; }
 .nava-sidebar__brand { display: flex; min-height: 54px; align-items: center; gap: 12px; padding: 0 8px 14px; color: #fff; font-size: 14px; font-weight: 600; text-decoration: none; }
 .nava-sidebar__brand img { width: 72px; height: 34px; padding: 4px 8px; border-radius: 7px; background: #fff; object-fit: contain; }
+.nava-sidebar__brand--client { min-height: unset; flex-direction: column; align-items: flex-start; gap: 8px; }
+.nava-sidebar__brand--client img { width: 100%; max-width: 204px; height: 56px; padding: 4px 6px; object-fit: contain; }
+.nava-sidebar__brand--client span { color: #d5e3df; font-size: 12px; }
 .nava-sidebar__project { display: none; }
 .nava-sidebar__section { display: flex; align-items: center; justify-content: space-between; margin: 14px 8px 6px; color: #a9c2bc; font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
 .nava-sidebar__section span { color: #a9c2bc; font-size: 10px; letter-spacing: 0; text-transform: none; }
@@ -391,6 +394,8 @@
   .nava-sidebar { align-items: center; padding-right: 10px; padding-left: 10px; }
   .nava-sidebar__brand { justify-content: center; padding-right: 0; padding-left: 0; }
   .nava-sidebar__brand img { width: 50px; padding: 4px; }
+  .nava-sidebar__brand--client { min-height: 54px; flex-direction: row; align-items: center; padding: 0; }
+  .nava-sidebar__brand--client img { width: 50px; height: 34px; padding: 4px; object-fit: cover; object-position: left center; }
   .nava-sidebar__brand span, .nava-sidebar__section, .nava-sidebar__nav button > span:not(.material-symbol), .nava-sidebar__nav button b, .nava-sidebar__footer button > span:not(.material-symbol) { display: none; }
   .nava-sidebar__nav { width: 100%; }
   .nava-sidebar__nav button, .nava-sidebar__footer button { justify-content: center; padding: 0; }
@@ -440,6 +445,8 @@
   .nava-sidebar.is-open { transform: translateX(0); }
   .nava-sidebar__brand { justify-content: flex-start; padding: 0 8px 14px; }
   .nava-sidebar__brand img { width: 72px; padding: 4px 8px; }
+  .nava-sidebar__brand--client { min-height: unset; flex-direction: column; align-items: flex-start; padding: 0 8px 14px; }
+  .nava-sidebar__brand--client img { width: 100%; max-width: 210px; height: 59px; padding: 4px 6px; object-fit: contain; }
   .nava-sidebar__project { display: block; margin: 0 8px 8px; }
   .nava-sidebar__project .project-selector { display: grid; justify-content: stretch; gap: 7px; }
   .nava-sidebar__project .project-selector select, .nava-sidebar__project .project-selector button { width: 100%; }

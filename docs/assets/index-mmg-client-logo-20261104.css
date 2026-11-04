@@ -1,0 +1,5 @@
+.nava-sidebar__brand--client{min-height:unset;flex-direction:column;align-items:flex-start;gap:8px}
+.nava-sidebar__brand--client img{width:100%;max-width:204px;height:56px;padding:4px 6px;object-fit:contain}
+.nava-sidebar__brand--client span{color:#d5e3df;font-size:12px}
+@media(max-width:1199px){.nava-sidebar__brand--client{min-height:54px;flex-direction:row;align-items:center;padding:0}.nava-sidebar__brand--client img{width:50px;height:34px;padding:4px;object-fit:cover;object-position:left center}}
+@media(max-width:767px){.nava-sidebar__brand--client{min-height:unset;flex-direction:column;align-items:flex-start;padding:0 8px 14px}.nava-sidebar__brand--client img{width:100%;max-width:210px;height:59px;padding:4px 6px;object-fit:contain}}
