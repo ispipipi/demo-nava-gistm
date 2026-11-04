@@ -86,7 +86,7 @@
 }
 
 .nava-app { min-height: 100vh; background: #f4f5f3; color: #14201d; }
-.nava-topbar { position: sticky; top: 0; z-index: 50; display: grid; grid-template-columns: minmax(210px, 1fr) minmax(250px, 430px) minmax(350px, 1fr); align-items: center; gap: 20px; min-height: 64px; padding: 0 24px; border-bottom: 1px solid #e2e5e1; background: rgba(255,255,255,.96); backdrop-filter: blur(14px); }
+.nava-topbar { position: sticky; top: 0; z-index: 50; display: grid; grid-template-columns: minmax(160px, 1fr) minmax(300px, 430px) max-content; align-items: center; gap: 12px; min-height: 64px; padding: 0 24px; border-bottom: 1px solid #e2e5e1; background: rgba(255,255,255,.96); backdrop-filter: blur(14px); }
 .nava-topbar__left, .nava-topbar__actions, .nava-topbar__crumb, .nava-topbar__cut, .nava-role-chip, .nava-mentat-action { display: flex; align-items: center; }
 .nava-topbar__left { min-width: 0; gap: 10px; }
 .nava-topbar__crumb { min-width: 0; gap: 8px; color: #5e6a66; font-size: 14px; white-space: nowrap; }
@@ -94,9 +94,9 @@
 .nava-topbar__crumb strong { overflow: hidden; color: #14201d; font-weight: 600; text-overflow: ellipsis; }
 .nava-topbar__project { display: flex; min-width: 0; justify-content: center; }
 .nava-topbar__project .project-selector { width: 100%; justify-content: center; }
-.nava-topbar__project .project-selector select { width: min(100%, 300px); min-height: 38px; border-color: #cbd1cc; color: #14201d; font-size: 14px; }
-.nava-topbar__project .primary-action { min-height: 38px; background: #0f3d37; }
-.nava-topbar__actions { justify-content: flex-end; gap: 10px; }
+.nava-topbar__project .project-selector select { flex: 1 1 auto; min-width: 0; width: auto; min-height: 38px; border-color: #cbd1cc; color: #14201d; font-size: 14px; }
+.nava-topbar__project .primary-action { flex: 0 0 auto; min-height: 38px; background: #0f3d37; }
+.nava-topbar__actions { min-width: 0; justify-content: flex-end; gap: 8px; }
 .nava-topbar__cut, .nava-role-chip { min-height: 36px; gap: 6px; padding: 0 10px; border: 1px solid #e2e5e1; border-radius: 999px; color: #3c4845; font-size: 12px; white-space: nowrap; }
 .nava-topbar__cut .material-symbol, .nava-role-chip .material-symbol { font-size: 16px; }
 .nava-mentat-action { min-height: 38px; gap: 6px; padding: 0 12px; border: 1px solid #0f3d37; border-radius: 8px; background: #0f3d37; color: white; font-size: 13px; font-weight: 600; }

@@ -1,0 +1,23 @@
+@import url("./index-DZjLLAfj.css");
+
+@media (min-width: 1200px) {
+  .nava-topbar {
+    grid-template-columns: minmax(160px, 1fr) minmax(300px, 430px) max-content;
+    gap: 12px;
+  }
+
+  .nava-topbar__project .project-selector select {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto;
+  }
+
+  .nava-topbar__project .primary-action {
+    flex: 0 0 auto;
+  }
+
+  .nava-topbar__actions {
+    min-width: 0;
+    gap: 8px;
+  }
+}

@@ -12,7 +12,9 @@ export function TopBar({ project, view, viewLabel, onOpenMenu, onOpenMentat }: {
   onOpenMentat: () => void;
 }) {
   const resetDemo = useProjectStore((state) => state.resetDemo);
-  const cutoff = new Intl.DateTimeFormat("es-CL", { day: "2-digit", month: "short", year: "numeric" }).format(new Date());
+  const cutoff = project.fechaCorte || (project.fechaEvaluacion
+    ? new Intl.DateTimeFormat("es-CL", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(`${project.fechaEvaluacion}T12:00:00`))
+    : "Sin fecha");
 
   return (
     <header className="nava-topbar">
