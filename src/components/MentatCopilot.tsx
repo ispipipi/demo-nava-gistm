@@ -100,8 +100,7 @@ function MentatDataBlocks({ blocks }: { blocks: MentatDataBlock[] }) {
   );
 }
 
-export function MentatCopilot({ project }: { project: Proyecto }) {
-  const [open, setOpen] = useState(false);
+export function MentatCopilot({ project, open, onOpenChange }: { project: Proyecto; open: boolean; onOpenChange: (open: boolean) => void }) {
   const [query, setQuery] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([initialMessage]);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -110,12 +109,12 @@ export function MentatCopilot({ project }: { project: Proyecto }) {
   useEffect(() => {
     if (!open) return undefined;
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape") onOpenChange(false);
     };
     document.addEventListener("keydown", onKeyDown);
     window.setTimeout(() => inputRef.current?.focus(), 80);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, [open]);
+  }, [open, onOpenChange]);
 
   useEffect(() => {
     const element = scrollRef.current;
@@ -146,21 +145,10 @@ export function MentatCopilot({ project }: { project: Proyecto }) {
 
   return (
     <>
-      {!open && (
-        <button type="button" className="mentat-launcher" aria-label="Abrir Mentat" onClick={() => setOpen(true)}>
-          <MentatAvatar compact />
-          <span>
-            <strong>Mentat</strong>
-            <small>Datos GISTM</small>
-          </span>
-          <span className="mentat-spark" aria-hidden="true">
-            ✦
-          </span>
-        </button>
-      )}
-
       {open && (
-        <section className="mentat-panel" role="dialog" aria-modal="false" aria-label="Chat de Mentat">
+        <>
+          <button className="mentat-backdrop" type="button" aria-label="Cerrar Mentat" onClick={() => onOpenChange(false)} />
+          <section className="mentat-panel" role="dialog" aria-modal="true" aria-label="Chat de Mentat">
           <header className="mentat-panel__header">
             <div className="flex min-w-0 items-center gap-3">
               <MentatAvatar />
@@ -169,7 +157,7 @@ export function MentatCopilot({ project }: { project: Proyecto }) {
                 <p className="mt-0.5 truncate text-[11px] text-white/60">Copiloto GISTM · Excel Nava</p>
               </div>
             </div>
-            <button type="button" className="mentat-close" aria-label="Cerrar Mentat" onClick={() => setOpen(false)}>
+            <button type="button" className="mentat-close" aria-label="Cerrar Mentat" onClick={() => onOpenChange(false)}>
               ×
             </button>
           </header>
@@ -220,6 +208,7 @@ export function MentatCopilot({ project }: { project: Proyecto }) {
             </button>
           </form>
         </section>
+        </>
       )}
     </>
   );

@@ -1,202 +1,102 @@
-import { useMemo, useState } from "react";
-import { getCriterionGroupSummary } from "../lib/aggregations";
+import { useMemo } from "react";
+import { getCriterionDetail, getCriterionGroupSummary, getCriterionRoot } from "../lib/aggregations";
+import { getCriterionLabel } from "../lib/criterionLabels";
 import { formatPct, getSemaphore } from "../lib/semaphore";
 import { useProjectStore } from "../store/useProjectStore";
-import { CriterioDetalleResumen, CriterioGrupoResumen, Proyecto } from "../types";
+import type { BrechaKey, Proyecto } from "../types";
+import { BrechaPanel } from "./BrechaPanel";
+import { Breadcrumbs, EmptyState, MaterialIcon, StatusBadge } from "./ui/primitives";
 
-type DrillLevel = "groups" | "details" | "fichas";
-
-function ringStyle(value: number | null) {
-  const pct = value === null ? 0 : Math.round(value * 100);
-  return {
-    background: `conic-gradient(#39c66f ${pct * 3.6}deg, #e8eef2 0deg)`
-  };
-}
-
-function getGroupLabel(groupId: string) {
-  const labels: Record<string, string> = {
-    "1": "Base de conocimiento",
-    "2": "Personas y comunidades",
-    "3": "Gobernanza",
-    "4": "Responsabilidades",
-    "5": "Gestion de riesgos",
-    "6": "Mejora continua",
-    "7": "Diseno tecnico",
-    "8": "Operacion",
-    "9": "Emergencias",
-    "10": "Respuesta y preparacion",
-    "11": "Revision y assurance",
-    "12": "Cierre",
-    "13": "Divulgacion",
-    "14": "Trazabilidad",
-    "15": "Aseguramiento externo"
-  };
-  return labels[groupId] ?? `Criterio ${groupId}`;
-}
-
-export function CriteriaDashboard({ project }: { project: Proyecto }) {
+export function CriteriaDashboard({ project, onOpenAnalyst }: {
+  project: Proyecto;
+  onOpenAnalyst: (criterion: string, subcriterion?: string | null, brecha?: BrechaKey) => void;
+}) {
+  const analystCriterion = useProjectStore((state) => state.analystCriterion);
+  const analystSubcriterion = useProjectStore((state) => state.analystSubcriterion);
+  const selectedBrecha = useProjectStore((state) => state.selectedBrecha);
+  const setAnalystLocation = useProjectStore((state) => state.setAnalystLocation);
   const selectBrecha = useProjectStore((state) => state.selectBrecha);
   const groups = useMemo(() => getCriterionGroupSummary(project.evidencias, project.brechas), [project]);
-  const [level, setLevel] = useState<DrillLevel>("groups");
-  const [activeGroupId, setActiveGroupId] = useState<string | null>(null);
-  const activeGroup = groups.find((group) => group.id === activeGroupId) ?? null;
-  const [activeDetailId, setActiveDetailId] = useState<string | null>(null);
-  const activeDetail = activeGroup?.detalles.find((detail) => detail.id === activeDetailId) ?? null;
+  const activeGroup = groups.find((item) => item.id === analystCriterion) ?? null;
+  const activeDetail = activeGroup?.detalles.find((item) => item.id === analystSubcriterion) ?? null;
+  const activeBrecha = selectedBrecha ? project.brechas.find((item) => item && item.evidenciaId === selectedBrecha.evidenciaId && item.criterio === selectedBrecha.criterio) : null;
+  const activeEvidence = activeBrecha ? project.evidencias.find((item) => item.id === activeBrecha.evidenciaId) : null;
 
-  function moveToTop() {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  function selectGroup(groupId: string) {
+    const group = groups.find((item) => item.id === groupId);
+    if (!group) return;
+    if (analystCriterion === groupId) {
+      setAnalystLocation(null, null);
+      selectBrecha(null);
+      return;
+    }
+    const nextDetail = group.detalles[0]?.id ?? null;
+    setAnalystLocation(groupId, nextDetail);
+    selectBrecha(null);
   }
 
-  function selectGroup(group: CriterioGrupoResumen) {
-    setActiveGroupId(group.id);
-    setActiveDetailId(null);
-    setLevel("details");
-    moveToTop();
+  function selectSubcriterion(subcriterion: string) {
+    if (!activeGroup?.detalles.some((item) => item.id === subcriterion)) return;
+    setAnalystLocation(activeGroup.id, subcriterion);
+    selectBrecha(null);
   }
 
-  function selectDetail(detail: CriterioDetalleResumen) {
-    setActiveDetailId(detail.id);
-    setLevel("fichas");
-    moveToTop();
-  }
-
-  function backToGroups() {
-    setLevel("groups");
-    setActiveGroupId(null);
-    setActiveDetailId(null);
-    moveToTop();
-  }
-
-  function backToDetails() {
-    setLevel("details");
-    setActiveDetailId(null);
-    moveToTop();
+  function openBrecha(evidenciaId: number, criterio: string) {
+    const root = getCriterionRoot(criterio);
+    const detail = getCriterionDetail(criterio);
+    onOpenAnalyst(root, detail, { evidenciaId, criterio });
   }
 
   return (
-    <section className="criteria-dashboard">
-      {level === "groups" && (
-        <>
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">Indicadores</p>
-              <h2>Criterios GISTM 1-15</h2>
-            </div>
-            <span className="status-badge badge-gray">15 criterios</span>
-          </div>
-          <div className="criteria-grid">
-            {groups.map((group) => (
-              <CriterionGroupCard key={group.id} group={group} onClick={() => selectGroup(group)} />
-            ))}
-          </div>
-        </>
-      )}
-
-      {level === "details" && activeGroup && (
-        <section className="subcriteria-panel single-panel">
-          <div className="navigation-strip">
-            <button className="back-action" onClick={backToGroups}>← Criterios 1-15</button>
-            <span>{activeGroup.nombre}</span>
-          </div>
-          <div className="panel-title">
-            <div>
-              <p className="eyebrow">Apertura</p>
-              <h2>{activeGroup.nombre}: {getGroupLabel(activeGroup.id)}</h2>
-            </div>
-            <span className="status-badge badge-gray">{activeGroup.detalles.length} subcriterios</span>
-          </div>
-
-          <div className="subcriteria-grid">
-            {activeGroup.detalles.map((detail) => (
-              <SubcriterionButton key={detail.id} detail={detail} onClick={() => selectDetail(detail)} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {level === "fichas" && activeGroup && activeDetail && (
-        <section className="associated-panel single-panel">
-          <div className="navigation-strip">
-            <button className="back-action" onClick={backToDetails}>← {activeGroup.nombre}</button>
-            <button className="back-action subtle" onClick={backToGroups}>Criterios 1-15</button>
-          </div>
-          <div className="panel-title">
-            <div>
-              <p className="eyebrow">Fichas asociadas</p>
-              <h2>{activeDetail.id}</h2>
-            </div>
-            <span className="status-badge badge-gray">{activeDetail.brechas.length} fichas</span>
-          </div>
-
-          <div className="associated-list">
-            {activeDetail.brechas.map((brecha) => {
-              const evidencia = project.evidencias.find((item) => item.id === brecha.evidenciaId);
-              const pct = typeof brecha.cumplimiento === "number" ? brecha.cumplimiento : null;
-              const semaforo = getSemaphore(pct);
-              if (!evidencia) return null;
-              return (
-                <button
-                  className="associated-card"
-                  key={`${brecha.evidenciaId}-${brecha.criterio}`}
-                  onClick={() => selectBrecha({ evidenciaId: brecha.evidenciaId, criterio: brecha.criterio })}
-                >
-                  <span className={`phase-dot dot-${semaforo.estado}`} />
-                  <span className="associated-main">
-                    <strong>{brecha.criterio} · {evidencia.descripcion}</strong>
-                    <small>{evidencia.tipo} · evidencia {String(evidencia.id).padStart(2, "0")} · {brecha.plan ?? "Sin plan"}</small>
-                  </span>
-                  <span className="associated-score">
-                    <strong>{formatPct(pct)}</strong>
-                    <small>{brecha.responsableBrecha || "Sin responsable"}</small>
-                  </span>
-                  <span className="chevron">›</span>
+    <div className={`nava-view nava-analyst${activeDetail ? " has-detail" : ""}${selectedBrecha ? " has-brecha" : ""}`}>
+      <div className="nava-analyst-heading">
+        <div><p className="nava-eyebrow">Trabajo · Edición</p><h1>Revisión de brechas y fichas</h1><p>Criterio → subcriterio → brechas asociadas → ficha editable</p></div>
+        <span className="nava-count-pill">{project.brechas.length} brechas</span>
+      </div>
+      <Breadcrumbs items={[
+        { label: "Criterios 1–15", onClick: () => { setAnalystLocation(null, null); selectBrecha(null); } },
+        ...(activeGroup ? [{ label: `C${activeGroup.id} ${getCriterionLabel(activeGroup.id)}`, onClick: () => { setAnalystLocation(activeGroup.id, null); selectBrecha(null); } }] : []),
+        ...(activeDetail ? [{ label: activeDetail.id, onClick: () => selectBrecha(null) }] : []),
+        ...(activeBrecha && activeEvidence ? [{ label: `E${String(activeEvidence.id).padStart(2, "0")}` }] : [])
+      ]} />
+      <div className="nava-analyst-grid">
+        <aside className="nava-criteria-master" aria-label="Criterios GISTM 1 a 15">
+          <div className="nava-analyst-panel-heading"><div><p className="nava-eyebrow">Matriz GISTM</p><h2>Criterios 1–15</h2></div><span>{groups.length}</span></div>
+          <div className="nava-criteria-accordion">
+            {groups.map((group) => {
+              const expanded = activeGroup?.id === group.id;
+              const status = getSemaphore(group.pctPromedio);
+              return <section className={`nava-criteria-group${expanded ? " is-expanded" : ""}`} key={group.id}>
+                <button type="button" className="nava-criteria-group__trigger" aria-expanded={expanded} onClick={() => selectGroup(group.id)}>
+                  <MaterialIcon name={expanded ? "expand_more" : "chevron_right"} />
+                  <span className="nava-criteria-group__copy"><span><b>C{group.id}</b><strong>{getCriterionLabel(group.id)}</strong></span><small>{group.detalles.length} subcriterios · {group.brechasAbiertas} abiertas</small></span>
+                  <span className="nava-criteria-group__score" style={{ color: status.fg }}><MaterialIcon name={status.icon} />{formatPct(group.pctPromedio)}</span>
                 </button>
-              );
+                {expanded && <div className="nava-criteria-sublist">{group.detalles.map((detail) => <button key={detail.id} type="button" className={analystSubcriterion === detail.id ? "is-selected" : ""} aria-current={analystSubcriterion === detail.id ? "true" : undefined} onClick={() => selectSubcriterion(detail.id)}><span className="nava-mono">{detail.id}</span><span><strong>{detail.brechas.length} brechas</strong><small>{detail.evidencias.length} fichas</small></span><b>{formatPct(detail.pctPromedio)}</b></button>)}</div>}
+              </section>;
             })}
           </div>
+        </aside>
+
+        <section className="nava-criteria-detail" aria-label="Brechas asociadas al subcriterio">
+          {!activeGroup ? <EmptyState title="Elige un criterio" detail="Selecciona uno de los 15 criterios para revisar sus subcriterios y brechas." /> : !activeDetail ? <div className="nava-detail-intro"><p className="nava-eyebrow">Criterio {activeGroup.id}</p><h2>{getCriterionLabel(activeGroup.id)}</h2><p>Selecciona un subcriterio para ver exclusivamente sus brechas asociadas.</p><div className="nava-subcriterion-choices">{activeGroup.detalles.map((detail) => <button key={detail.id} type="button" onClick={() => selectSubcriterion(detail.id)}><span className="nava-mono">{detail.id}</span><strong>{detail.brechas.length} brechas</strong><MaterialIcon name="chevron_right" /></button>)}</div></div> : <>
+            <div className="nava-detail-header"><button className="nava-mobile-back" type="button" onClick={() => { setAnalystLocation(activeGroup.id, null); selectBrecha(null); }}><MaterialIcon name="arrow_back" />Criterios</button><div><p className="nava-eyebrow">Criterio {activeGroup.id} · {getCriterionLabel(activeGroup.id)}</p><h2>Brechas asociadas</h2><p>Subcriterio <strong className="nava-mono">{activeDetail.id}</strong> · sólo registros vinculados a este código</p></div><span className="nava-count-pill">{activeDetail.brechas.length} fichas</span></div>
+            <div className="nava-subcriterion-tabs" role="group" aria-label={`Subcriterios del criterio ${activeGroup.id}`}>{activeGroup.detalles.map((detail) => <button key={detail.id} type="button" className={analystSubcriterion === detail.id ? "is-active" : ""} aria-pressed={analystSubcriterion === detail.id} onClick={() => selectSubcriterion(detail.id)}><span className="nava-mono">{detail.id}</span><small>{formatPct(detail.pctPromedio)}</small></button>)}</div>
+            <div className="nava-associated-brechas">{activeDetail.brechas.length ? activeDetail.brechas.map((brecha) => {
+              const evidence = project.evidencias.find((item) => item.id === brecha.evidenciaId);
+              if (!evidence) return null;
+              const selected = selectedBrecha?.evidenciaId === brecha.evidenciaId && selectedBrecha.criterio === brecha.criterio;
+              const pct = typeof brecha.cumplimiento === "number" ? brecha.cumplimiento : null;
+              return <button className={`nava-associated-row${selected ? " is-selected" : ""}`} type="button" key={`${brecha.evidenciaId}-${brecha.criterio}`} onClick={() => openBrecha(brecha.evidenciaId, brecha.criterio)}><span className="nava-associated-row__icon"><MaterialIcon name="description" /></span><span className="nava-associated-row__copy"><strong>{brecha.criterio} · {evidence.descripcion}</strong><small>E{String(evidence.id).padStart(2, "0")} · {evidence.tipo} · {brecha.plan ?? "Sin plan"}</small></span><StatusBadge value={pct} /><MaterialIcon name="chevron_right" /></button>;
+            }) : <EmptyState title="Sin brechas asociadas" detail={`No hay registros vinculados al subcriterio ${activeDetail.id}.`} positive />}</div>
+          </>}
         </section>
-      )}
-    </section>
-  );
-}
 
-function CriterionGroupCard({ group, onClick }: { group: CriterioGrupoResumen; onClick: () => void }) {
-  const semaforo = getSemaphore(group.pctPromedio);
-
-  return (
-    <button className="criterion-group-card" onClick={onClick}>
-      <span className={`phase-dot dot-${semaforo.estado}`} />
-      <span className="criterion-code">C{group.id}</span>
-      <span className="criterion-copy">
-        <strong>{getGroupLabel(group.id)}</strong>
-        <small>{group.detalles.length} subcriterios · {group.evidenciasCount} fichas</small>
-      </span>
-      <span className="ring-meter" style={ringStyle(group.pctPromedio)}>
-        <span>{formatPct(group.pctPromedio)}</span>
-      </span>
-      <span className="metric-pair">
-        <strong>{group.brechasAbiertas}</strong>
-        <small>brechas</small>
-      </span>
-      <span className="chevron">›</span>
-    </button>
-  );
-}
-
-function SubcriterionButton({ detail, onClick }: { detail: CriterioDetalleResumen; onClick: () => void }) {
-  const semaforo = getSemaphore(detail.pctPromedio);
-
-  return (
-    <button className="subcriterion-button" onClick={onClick}>
-      <span className={`phase-dot dot-${semaforo.estado}`} />
-      <span>
-        <strong>{detail.id}</strong>
-        <small>{detail.brechas.length} brechas · {detail.evidencias.length} fichas asociadas</small>
-      </span>
-      <span className="subcriterion-score">
-        <strong>{formatPct(detail.pctPromedio)}</strong>
-        <small>{detail.brechasAbiertas} brechas</small>
-      </span>
-    </button>
+        <aside className="nava-analyst-ficha" aria-label="Detalle de la ficha">
+          {selectedBrecha && activeBrecha && <BrechaPanel project={project} brechaKey={selectedBrecha} variant="analyst" onClose={() => selectBrecha(null)} />}
+          {(!selectedBrecha || !activeBrecha) && <EmptyState title="Selecciona una ficha" detail="El detalle y sus campos editables aparecerán aquí." />}
+        </aside>
+      </div>
+    </div>
   );
 }

@@ -1,28 +1,35 @@
 import { Proyecto } from "../types";
 import { ProjectSelector } from "./ProjectSelector";
-import { RoleToggle } from "./RoleToggle";
 import { useProjectStore } from "../store/useProjectStore";
+import type { AppView } from "../store/useProjectStore";
+import { MaterialIcon } from "./ui/primitives";
 
-export function TopBar({ project }: { project: Proyecto }) {
+export function TopBar({ project, view, viewLabel, onOpenMenu, onOpenMentat }: {
+  project: Proyecto;
+  view: AppView;
+  viewLabel: string;
+  onOpenMenu: () => void;
+  onOpenMentat: () => void;
+}) {
   const resetDemo = useProjectStore((state) => state.resetDemo);
+  const cutoff = new Intl.DateTimeFormat("es-CL", { day: "2-digit", month: "short", year: "numeric" }).format(new Date());
 
   return (
-    <header className="sticky top-0 z-30 border-b border-line/80 bg-white/92 backdrop-blur">
-      <div className="mx-auto grid min-h-[72px] w-[min(100%-32px,1480px)] grid-cols-[auto_1fr_auto] items-center gap-4">
-        <div className="brand-lockup">
-          <img className="brand-logo" src={`${import.meta.env.BASE_URL}nava-logo.png`} alt="Nava" />
-          <div>
-            <strong>Nava GISTM</strong>
-            <span>{project.nombre}</span>
-          </div>
-        </div>
+    <header className="nava-topbar">
+      <div className="nava-topbar__left">
+        <button className="nava-menu-trigger" type="button" onClick={onOpenMenu} aria-label="Abrir menú">
+          <MaterialIcon name="menu" />
+        </button>
+        <div className="nava-topbar__crumb"><span>GISTM Tracker</span><MaterialIcon name="chevron_right" /><strong>{viewLabel}</strong></div>
+      </div>
+      <div className="nava-topbar__project">
         <ProjectSelector />
-        <div className="flex items-center gap-2">
-          <RoleToggle />
-          <button className="icon-action" title="Reiniciar demo" onClick={resetDemo} aria-label="Reiniciar demo">
-            ↻
-          </button>
-        </div>
+      </div>
+      <div className="nava-topbar__actions">
+        <span className="nava-topbar__cut"><MaterialIcon name="calendar_today" />Corte · {cutoff}</span>
+        <span className="nava-role-chip"><MaterialIcon name={view === "analista" ? "edit_note" : "visibility"} />{view === "analista" ? "Analista" : "Gerencia · lectura"}</span>
+        <button className="nava-mentat-action" type="button" onClick={onOpenMentat}><MaterialIcon name="forum" /><span>Mentat</span></button>
+        <button className="icon-action nava-reset-action" title="Reiniciar demo" onClick={resetDemo} aria-label="Reiniciar demo"><MaterialIcon name="refresh" /></button>
       </div>
     </header>
   );

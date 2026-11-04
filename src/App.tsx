@@ -1,51 +1,78 @@
-import { BrechaPanel } from "./components/BrechaPanel";
-import { ClientDashboard } from "./components/ClientDashboard";
+import { useEffect, useMemo, useState } from "react";
+import { AppShell } from "./components/AppShell";
 import { CriteriaDashboard } from "./components/CriteriaDashboard";
 import { FichaPanel } from "./components/FichaPanel";
+import { ManagementDashboard } from "./components/ManagementDashboard";
 import { MentatCopilot } from "./components/MentatCopilot";
-import { TopBar } from "./components/TopBar";
 import { useProjectStore } from "./store/useProjectStore";
-import { getProjectPct } from "./lib/aggregations";
-import { formatPct, getSemaphore } from "./lib/semaphore";
+import { getCriterionDetail, getCriterionGroupSummary, getCriterionRoot } from "./lib/aggregations";
+import { getManagementInsights } from "./lib/managementDashboard";
+import type { BrechaKey } from "./types";
 
 function App() {
-  const { role, proyectos, currentProjectId, selectedEvidenceId, selectedBrecha } = useProjectStore();
+  const {
+    proyectos, currentProjectId, selectedEvidenceId, selectedBrecha, view,
+    analystCriterion, analystSubcriterion, setView, setAnalystLocation, selectBrecha, selectEvidence
+  } = useProjectStore();
   const project = proyectos.find((item) => item.id === currentProjectId) ?? proyectos[0];
-  const projectPct = getProjectPct(project.brechas);
-  const semaforo = getSemaphore(projectPct);
-  const selectedBrechaKey =
-    selectedBrecha && typeof selectedBrecha.evidenciaId === "number" && typeof selectedBrecha.criterio === "string" ? selectedBrecha : null;
-  const selectedEvidenceKey = typeof selectedEvidenceId === "number" ? selectedEvidenceId : null;
-  const validSelectedBrecha =
-    selectedBrechaKey !== null &&
-    project.brechas.some((item) => item && item.evidenciaId === selectedBrechaKey.evidenciaId && item.criterio === selectedBrechaKey.criterio);
-  const validSelectedEvidenceId = selectedEvidenceKey !== null && project.evidencias.some((item) => item && item.id === selectedEvidenceKey);
+  const insights = useMemo(() => getManagementInsights(project), [project]);
+  const groups = useMemo(() => getCriterionGroupSummary(project.evidencias, project.brechas), [project]);
+  const [mentatOpen, setMentatOpen] = useState(false);
+
+  useEffect(() => {
+    if (view !== "analista") return;
+    const group = groups.find((item) => item.id === analystCriterion);
+    if (analystCriterion && !group) {
+      setAnalystLocation(groups[0]?.id ?? null, null);
+      return;
+    }
+    if (analystSubcriterion && !group?.detalles.some((item) => item.id === analystSubcriterion)) {
+      setAnalystLocation(analystCriterion, null);
+    }
+    if (selectedBrecha) {
+      const exists = project.brechas.some((item) => item && item.evidenciaId === selectedBrecha.evidenciaId && item.criterio === selectedBrecha.criterio);
+      if (!exists) {
+        selectBrecha(null);
+        return;
+      }
+      const root = getCriterionRoot(selectedBrecha.criterio);
+      const detail = getCriterionDetail(selectedBrecha.criterio);
+      if (analystCriterion !== root || analystSubcriterion !== detail) setAnalystLocation(root, detail);
+    }
+  }, [view, groups, analystCriterion, analystSubcriterion, selectedBrecha, project.brechas, setAnalystLocation, selectBrecha]);
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    params.set("vista", view);
+    if (view === "analista") {
+      const criterion = analystSubcriterion ?? analystCriterion;
+      if (criterion) params.set("c", criterion);
+      if (selectedBrecha) params.set("f", `${selectedBrecha.evidenciaId}|${selectedBrecha.criterio}`);
+    }
+    const query = params.toString();
+    const nextUrl = `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash}`;
+    window.history.replaceState(null, "", nextUrl);
+  }, [view, analystCriterion, analystSubcriterion, selectedBrecha]);
+
+  function openAnalyst(criterion: string, subcriterion?: string | null, brecha?: BrechaKey) {
+    setAnalystLocation(criterion, subcriterion ?? null);
+    if (brecha) selectBrecha(brecha);
+    else selectBrecha(null);
+    setView("analista");
+  }
+
+  const validSelectedEvidenceId = typeof selectedEvidenceId === "number" && project.evidencias.some((item) => item && item.id === selectedEvidenceId);
 
   return (
-    <div className="min-h-screen bg-app text-ink">
-      <TopBar project={project} />
-      <main className="mx-auto flex w-[min(100%-32px,1480px)] flex-col gap-5 py-5">
-        <section className="summary-band">
-          <div>
-            <p className="eyebrow">GISTM Tracker Nava</p>
-            <h1>{role === "cliente" ? "Dashboard gerencial GISTM" : "Indicadores por criterio GISTM"}</h1>
-            <p>
-              {project.cliente} · evaluacion {project.fechaEvaluacion} · {project.evidencias.length} evidencias · {project.brechas.length} relaciones evidencia-criterio
-            </p>
-          </div>
-          <div className="summary-score">
-            <span className={`status-badge ${semaforo.className}`}>{semaforo.label}</span>
-            <strong>{formatPct(projectPct)}</strong>
-            <small>Cumplimiento total</small>
-          </div>
-        </section>
-
-        {role === "cliente" ? <ClientDashboard project={project} /> : <CriteriaDashboard project={project} />}
-      </main>
-      <MentatCopilot project={project} />
-      {role === "analista" && validSelectedBrecha && selectedBrechaKey !== null && <BrechaPanel project={project} brechaKey={selectedBrechaKey} />}
-      {role === "analista" && validSelectedEvidenceId && selectedEvidenceKey !== null && <FichaPanel project={project} evidenceId={selectedEvidenceKey} />}
-    </div>
+    <AppShell project={project} view={view} insights={insights} onViewChange={setView} onOpenMentat={() => setMentatOpen(true)}>
+      {view === "analista" ? (
+        <CriteriaDashboard project={project} onOpenAnalyst={openAnalyst} />
+      ) : (
+        <ManagementDashboard project={project} view={view} onViewChange={setView} onOpenAnalyst={openAnalyst} />
+      )}
+      <MentatCopilot project={project} open={mentatOpen} onOpenChange={setMentatOpen} />
+      {view === "analista" && validSelectedEvidenceId && <FichaPanel project={project} evidenceId={selectedEvidenceId as number} />}
+    </AppShell>
   );
 }
 

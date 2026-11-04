@@ -15,15 +15,33 @@ import {
   Tema
 } from "../types";
 
+export type AppView = "resumen" | "avance" | "warnings" | "documentos" | "criterios" | "analista";
+export type WarningFilter = "todos" | "vencida" | "proxima";
+export type DocumentAvailabilityFilter = "todos" | "Si" | "No" | "NA" | "sin-informar" | "pendientes";
+export type ProgressSeries = "ambas" | "real" | "esperado";
+
+type DashboardFilters = {
+  warnings: { status: WarningFilter; owner: string };
+  documents: { owner: string; availability: DocumentAvailabilityFilter };
+  curve: { series: ProgressSeries };
+};
+
 type ProjectState = {
   role: Rol;
   proyectos: Proyecto[];
   currentProjectId: string;
   selectedEvidenceId: number | null;
   selectedBrecha: BrechaKey | null;
+  view: AppView;
+  analystCriterion: string | null;
+  analystSubcriterion: string | null;
+  dashboardFilters: DashboardFilters;
   collapsedThemes: string[];
   temas: Tema[];
   setRole: (role: Rol) => void;
+  setView: (view: AppView) => void;
+  setAnalystLocation: (criterion: string | null, subcriterion?: string | null) => void;
+  setDashboardFilters: (patch: Partial<DashboardFilters>) => void;
   setCurrentProject: (projectId: string) => void;
   createProject: (cliente: string) => void;
   selectEvidence: (evidenceId: number | null) => void;
@@ -42,6 +60,30 @@ const p25006Real = p25006RealData as {
   brechas: Brecha[];
 };
 const temas = temaCriteriosData as Tema[];
+
+const defaultDashboardFilters: DashboardFilters = {
+  warnings: { status: "todos", owner: "Todos" },
+  documents: { owner: "Todos", availability: "todos" },
+  curve: { series: "ambas" }
+};
+
+function readInitialNavigation() {
+  if (typeof window === "undefined") return { view: "resumen" as AppView, criterion: null, subcriterion: null, brecha: null };
+  const params = new URLSearchParams(window.location.search);
+  const requestedView = params.get("vista") as AppView | null;
+  const view: AppView = requestedView && ["resumen", "avance", "warnings", "documentos", "criterios", "analista"].includes(requestedView)
+    ? requestedView
+    : "resumen";
+  const code = params.get("c") ?? "";
+  const validCode = /^\d{1,2}(?:\.\d{1,2})?$/.test(code) ? code : null;
+  const [criterion, subcriterion] = validCode ? [validCode.split(".")[0], validCode.includes(".") ? validCode : null] : [null, null];
+  const evidenceParam = params.get("f") ?? "";
+  const separator = evidenceParam.indexOf("|");
+  const evidenceId = separator > 0 ? Number(evidenceParam.slice(0, separator)) : NaN;
+  const criterio = separator > 0 ? evidenceParam.slice(separator + 1) : "";
+  const brecha = Number.isInteger(evidenceId) && evidenceId > 0 && criterio ? { evidenciaId: evidenceId, criterio } : null;
+  return { view, criterion, subcriterion, brecha };
+}
 
 function relationTemplates() {
   return evidenciaCriterioTemplate.flatMap((item) =>
@@ -84,12 +126,17 @@ function buildP25006Project(): Proyecto {
 }
 
 function initialState() {
+  const navigation = readInitialNavigation();
   return {
-    role: "cliente" as Rol,
+    role: navigation.view === "analista" ? ("analista" as Rol) : ("cliente" as Rol),
     proyectos: [buildP25006Project()],
     currentProjectId: "p25-006",
-    selectedEvidenceId: null,
-    selectedBrecha: null,
+    selectedEvidenceId: null as number | null,
+    selectedBrecha: navigation.view === "analista" ? navigation.brecha : null,
+    view: navigation.view,
+    analystCriterion: navigation.criterion,
+    analystSubcriterion: navigation.subcriterion,
+    dashboardFilters: defaultDashboardFilters,
     collapsedThemes: [],
     temas
   };
@@ -99,7 +146,16 @@ export const useProjectStore = create<ProjectState>()(
   persist(
     (set) => ({
       ...initialState(),
-      setRole: (role) => set({ role, selectedEvidenceId: null, selectedBrecha: null }),
+      setRole: (role) => set({ role, view: role === "analista" ? "analista" : "resumen", selectedEvidenceId: null, selectedBrecha: null }),
+      setView: (view) => set({ view, role: view === "analista" ? "analista" : "cliente" }),
+      setAnalystLocation: (criterion, subcriterion = null) => set({ analystCriterion: criterion, analystSubcriterion: subcriterion }),
+      setDashboardFilters: (patch) => set((state) => ({
+        dashboardFilters: {
+          warnings: { ...state.dashboardFilters.warnings, ...patch.warnings },
+          documents: { ...state.dashboardFilters.documents, ...patch.documents },
+          curve: { ...state.dashboardFilters.curve, ...patch.curve }
+        }
+      })),
       setCurrentProject: (projectId) => set({ currentProjectId: projectId, selectedEvidenceId: null, selectedBrecha: null }),
       createProject: (cliente) => {
         const project = buildBlankProject(cliente);
@@ -108,7 +164,10 @@ export const useProjectStore = create<ProjectState>()(
           currentProjectId: project.id,
           selectedEvidenceId: null,
           selectedBrecha: null,
-          role: "cliente"
+          role: "cliente",
+          view: "resumen",
+          analystCriterion: null,
+          analystSubcriterion: null
         }));
       },
       selectEvidence: (evidenceId) => set({ selectedEvidenceId: evidenceId, selectedBrecha: null }),
