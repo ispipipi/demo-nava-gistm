@@ -2475,3 +2475,90 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .nava-field { font-size: 13px; }
   .nava-field input, .nava-field select, .nava-field textarea { font-size: 14px; }
 }
+
+/* Larger reading scale and wider canvas requested after review. */
+.nava-app { font-size: 16px; }
+.nava-main { padding: 28px; }
+.nava-page { width: min(100%, 1760px); }
+.nava-topbar__crumb, .nava-topbar__project .project-selector select { font-size: 16px; }
+.nava-topbar__cut, .nava-role-chip { font-size: 14px; }
+.nava-mentat-action { font-size: 15px; }
+.nava-sidebar__nav button, .nava-sidebar__footer button { font-size: 15px; }
+.nava-sidebar__section, .nava-sidebar__section span { font-size: 13px; }
+.nava-sidebar__nav button b { font-size: 13px; }
+.nava-page-heading h1, .nava-analyst-heading h1 { font-size: 34px; line-height: 40px; }
+.nava-page-heading p:not(.nava-eyebrow), .nava-analyst-heading p:not(.nava-eyebrow) { font-size: 16px; line-height: 24px; }
+.nava-eyebrow { font-size: 13px; }
+.nava-section-heading h2, .nava-analyst-panel-heading h2 { font-size: 19px; line-height: 26px; }
+.nava-section-heading p, .nava-text-action, .nava-status-banner > div > span,
+.nava-summary-status__message span, .nava-data-notice, .nava-warning-row__owner,
+.nava-warning-row__plan, .nava-document-table td, .nava-document-table th,
+.nava-critical-row__code, .nava-critical-row__open,
+.nava-detail-intro > p:not(.nava-eyebrow), .nava-detail-header p,
+.nava-associated-row__copy small, .nava-ficha-footer > span { font-size: 15px; line-height: 22px; }
+.nava-status-banner p, .nava-summary-status__message p, .nava-kpi__label,
+.nava-kpi small, .nava-criterion-tile__top, .nava-criterion-tile__stats span,
+.nava-chart__legend, .nava-warning-row__main small, .nava-warning-row__date small,
+.nava-document-status, .nava-critical-row__rank, .nava-critical-row__main small,
+.nava-critical-row__open small, .nava-count-pill, .nava-criteria-group__copy b,
+.nava-criteria-group__copy small, .nava-criteria-group__score,
+.nava-criteria-sublist button small, .nava-criteria-sublist button > b,
+.nava-subcriterion-tabs small, .nava-analyst-panel-heading > span,
+.nava-deadline-badge, .nava-segmented button span, .nava-filter-chips button span,
+.nava-field, .nava-ficha-score > span:last-child { font-size: 14px; }
+.nava-select-label, .nava-filter-chips button, .nava-segmented button,
+.nava-result-count, .nava-active-filter, .nava-active-filter button,
+.nava-breadcrumbs, .nava-breadcrumbs button, .nava-owner-filter > span { font-size: 14px; }
+.nava-status-banner strong, .nava-summary-status__message h2 { font-size: 20px; line-height: 27px; }
+.nava-kpi strong { font-size: 36px; line-height: 42px; }
+.nava-kpi-line .nava-kpi strong, .nava-warning-summary .nava-kpi strong,
+.nava-critical-shortcuts .nava-kpi strong { font-size: 27px; line-height: 33px; }
+.nava-criterion-tile > strong, .nava-warning-row__main strong,
+.nava-critical-row__main strong, .nava-associated-row__copy strong,
+.nava-ficha-header h2 { font-size: 17px; line-height: 23px; }
+.nava-criterion-tile__stats b { font-size: 23px; }
+.nava-criteria-group__copy strong, .nava-criteria-sublist button strong { font-size: 15px; }
+.nava-field input, .nava-field select, .nava-field textarea,
+.nava-select-label select { font-size: 15px; }
+.nava-status, .nava-critical-row .nava-status { font-size: 14px; }
+.nava-chart__axis, .nava-chart__month, .nava-chart__today-label { font-size: 12px; }
+
+@media (min-width: 1200px) {
+  .nava-main { padding: 30px clamp(28px, 2.1vw, 40px); }
+}
+
+@media (max-width: 1199px) {
+  .nava-main { padding: 24px; }
+}
+
+@media (max-width: 767px) {
+  .nava-main { padding: 18px 14px 30px; }
+  .nava-page-heading h1, .nava-analyst-heading h1 { font-size: 26px; line-height: 32px; }
+  .nava-page-heading p:not(.nava-eyebrow), .nava-analyst-heading p:not(.nava-eyebrow) { font-size: 15px; line-height: 22px; }
+  .nava-eyebrow { font-size: 12px; }
+  .nava-section-heading h2, .nava-analyst-panel-heading h2 { font-size: 18px; line-height: 24px; }
+  .nava-section-heading p, .nava-text-action, .nava-status-banner > div > span,
+  .nava-summary-status__message span, .nava-data-notice, .nava-warning-row__owner,
+  .nava-warning-row__plan, .nava-document-table td, .nava-document-table th,
+  .nava-detail-intro > p:not(.nava-eyebrow), .nava-detail-header p { font-size: 14px; line-height: 20px; }
+  .nava-status-banner p, .nava-summary-status__message p, .nava-kpi__label,
+  .nava-kpi small, .nava-criterion-tile__top, .nava-criterion-tile__stats span,
+  .nava-warning-row__main small, .nava-warning-row__date small, .nava-document-status,
+  .nava-critical-row__rank, .nava-critical-row__main small, .nava-count-pill,
+  .nava-field, .nava-deadline-badge { font-size: 13px; }
+  .nava-status-banner strong, .nava-summary-status__message h2 { font-size: 18px; line-height: 24px; }
+  .nava-kpi strong { font-size: 30px; line-height: 36px; }
+  .nava-kpi-line .nava-kpi strong, .nava-warning-summary .nava-kpi strong,
+  .nava-critical-shortcuts .nava-kpi strong { font-size: 24px; line-height: 30px; }
+  .nava-criterion-tile > strong, .nava-warning-row__main strong,
+  .nava-critical-row__main strong, .nava-associated-row__copy strong,
+  .nava-ficha-header h2 { font-size: 16px; line-height: 21px; }
+  .nava-criterion-tile { min-height: 132px; }
+  .nava-text-action, .nava-select-label, .nava-filter-chips button, .nava-segmented button,
+  .nava-result-count, .nava-active-filter, .nava-active-filter button,
+  .nava-breadcrumbs, .nava-owner-filter > span { font-size: 14px; }
+  .nava-field input, .nava-field select, .nava-field textarea,
+  .nava-select-label select { font-size: 15px; }
+  .nava-status, .nava-critical-row .nava-status { font-size: 13px; }
+  .nava-topbar__crumb { font-size: 14px; }
+}
