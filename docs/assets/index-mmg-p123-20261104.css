@@ -21,3 +21,41 @@
     gap: 8px;
   }
 }
+
+.nava-main { padding: 30px clamp(20px, 2vw, 40px); }
+.nava-page { width: 100%; max-width: none; margin: 0; }
+.nava-page-heading h1, .nava-analyst-heading h1 { font-size: 34px; line-height: 40px; }
+.nava-page-heading p:not(.nava-eyebrow), .nava-analyst-heading p:not(.nava-eyebrow) { font-size: 16px; line-height: 24px; }
+.nava-section-heading h2, .nava-analyst-panel-heading h2 { font-size: 19px; line-height: 26px; }
+.nava-section-heading p, .nava-text-action, .nava-status-banner > div > span,
+.nava-summary-status__message span, .nava-data-notice, .nava-warning-row__owner,
+.nava-warning-row__plan, .nava-document-table td, .nava-document-table th,
+.nava-detail-intro > p:not(.nava-eyebrow), .nava-detail-header p { font-size: 15px; line-height: 22px; }
+.nava-kpi__label, .nava-kpi small, .nava-criterion-tile__top,
+.nava-criterion-tile__stats span, .nava-warning-row__main small,
+.nava-warning-row__date small, .nava-document-status, .nava-critical-row__main small,
+.nava-count-pill, .nava-field, .nava-deadline-badge { font-size: 14px; }
+.nava-status-banner strong, .nava-summary-status__message h2 { font-size: 20px; line-height: 27px; }
+.nava-kpi strong { font-size: 36px; line-height: 42px; }
+.nava-criterion-tile > strong, .nava-warning-row__main strong,
+.nava-critical-row__main strong, .nava-associated-row__copy strong,
+.nava-ficha-header h2 { font-size: 17px; line-height: 23px; }
+.nava-field input, .nava-field select, .nava-field textarea { font-size: 15px; }
+
+@media (max-width: 1199px) {
+  .nava-main { padding: 24px; }
+}
+
+@media (max-width: 767px) {
+  .nava-main { padding: 18px 14px 30px; }
+  .nava-page-heading h1, .nava-analyst-heading h1 { font-size: 26px; line-height: 32px; }
+  .nava-page-heading p:not(.nava-eyebrow), .nava-analyst-heading p:not(.nava-eyebrow) { font-size: 15px; line-height: 22px; }
+  .nava-section-heading h2, .nava-analyst-panel-heading h2 { font-size: 18px; line-height: 24px; }
+  .nava-section-heading p, .nava-text-action, .nava-data-notice,
+  .nava-document-table td, .nava-document-table th { font-size: 14px; line-height: 20px; }
+  .nava-kpi strong { font-size: 30px; line-height: 36px; }
+  .nava-criterion-tile > strong, .nava-warning-row__main strong,
+  .nava-critical-row__main strong, .nava-associated-row__copy strong,
+  .nava-ficha-header h2 { font-size: 16px; line-height: 21px; }
+  .nava-field input, .nava-field select, .nava-field textarea { font-size: 15px; }
+}
