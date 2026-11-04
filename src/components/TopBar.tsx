@@ -12,6 +12,7 @@ export function TopBar({ project, view, viewLabel, onOpenMenu, onOpenMentat }: {
   onOpenMentat: () => void;
 }) {
   const resetDemo = useProjectStore((state) => state.resetDemo);
+  const isMmgProject = project.id === "mmg-lb-tsf1";
   const cutoff = project.fechaCorte || (project.fechaEvaluacion
     ? new Intl.DateTimeFormat("es-CL", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(`${project.fechaEvaluacion}T12:00:00`))
     : "Sin fecha");
@@ -22,6 +23,7 @@ export function TopBar({ project, view, viewLabel, onOpenMenu, onOpenMentat }: {
         <button className="nava-menu-trigger" type="button" onClick={onOpenMenu} aria-label="Abrir menú">
           <MaterialIcon name="menu" />
         </button>
+        <img className={`nava-topbar__mobile-logo${isMmgProject ? " is-mmg" : ""}`} src={`${import.meta.env.BASE_URL}${isMmgProject ? "mmg-las-bambas-logo.jpeg" : "nava-logo.png"}`} alt={isMmgProject ? "MMG" : "Nava"} />
         <div className="nava-topbar__crumb"><span>GISTM Tracker</span><MaterialIcon name="chevron_right" /><strong>{viewLabel}</strong></div>
       </div>
       <div className="nava-topbar__project">
