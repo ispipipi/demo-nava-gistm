@@ -16,7 +16,7 @@ function App() {
   } = useProjectStore();
   const project = proyectos.find((item) => item.id === currentProjectId) ?? proyectos[0];
   const insights = useMemo(() => getManagementInsights(project), [project]);
-  const groups = useMemo(() => getCriterionGroupSummary(project.evidencias, project.brechas), [project]);
+  const groups = useMemo(() => getCriterionGroupSummary(project.evidencias, project.brechas, project), [project]);
   const [mentatOpen, setMentatOpen] = useState(false);
 
   useEffect(() => {

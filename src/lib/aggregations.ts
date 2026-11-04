@@ -1,5 +1,10 @@
 import { Brecha, CriterioGrupoResumen, Evidencia, Tema, TemaResumen } from "../types";
 
+type AggregationOptions = {
+  principiosActivos?: string[];
+  metodoAgregacion?: "relaciones" | "resumen-excel";
+};
+
 export function averageCumplimiento(values: Array<number | "NA" | null | undefined>) {
   const numeric = values.filter((value): value is number => typeof value === "number" && Number.isFinite(value));
   if (numeric.length === 0) return null;
@@ -27,19 +32,33 @@ export function getDominantThemeForEvidence(evidenciaId: number, brechas: Brecha
   return firstCriterion ? getThemeForCriterion(firstCriterion, temas) : temas[0];
 }
 
-export function getProjectPct(brechas: Brecha[]) {
+export function getProjectPct(brechas: Brecha[], options: AggregationOptions = {}) {
+  if (options.metodoAgregacion === "resumen-excel") {
+    return averageCumplimiento(getCriterionGroupSummary([], brechas, options).map((group) => group.pctPromedio));
+  }
   return averageCumplimiento(getAllCriteria(brechas).map((criterio) => getCriterionPct(criterio, brechas)));
 }
 
-export function getTemaResumen(temas: Tema[], evidencias: Evidencia[], brechas: Brecha[]): TemaResumen[] {
-  const criteria = getAllCriteria(brechas);
+export function getTemaResumen(temas: Tema[], evidencias: Evidencia[], brechas: Brecha[], options: AggregationOptions = {}): TemaResumen[] {
+  const excelMode = options.metodoAgregacion === "resumen-excel";
+  const criteria = excelMode
+    ? Array.from(new Set(brechas.map((item) => getCriterionDetail(item.criterio)))).sort((a, b) => a.localeCompare(b, "es", { numeric: true }))
+    : getAllCriteria(brechas);
   return temas.map((tema) => {
     const criterios = criteria
       .filter((criterio) => tema.criterioPrefixes.some((prefix) => criterio.startsWith(prefix)))
-      .map((criterio) => ({ criterio, pct: getCriterionPct(criterio, brechas) }));
+      .map((criterio) => ({
+        criterio,
+        pct: excelMode
+          ? averageCumplimiento(
+              getAllCriteria(brechas.filter((item) => getCriterionDetail(item.criterio) === criterio))
+                .map((leaf) => getCriterionPct(leaf, brechas))
+            )
+          : getCriterionPct(criterio, brechas)
+      }));
     const evidenciaIds = new Set(
       brechas
-        .filter((item) => criterios.some((criterio) => criterio.criterio === item.criterio))
+        .filter((item) => criterios.some((criterio) => criterio.criterio === (excelMode ? getCriterionDetail(item.criterio) : item.criterio)))
         .map((item) => item.evidenciaId)
     );
     const brechasAbiertas = brechas.filter(
@@ -47,7 +66,7 @@ export function getTemaResumen(temas: Tema[], evidencias: Evidencia[], brechas: 
         item.plan &&
         item.plan !== "Cumple" &&
         item.plan !== "NA" &&
-        criterios.some((criterio) => criterio.criterio === item.criterio)
+        criterios.some((criterio) => criterio.criterio === (excelMode ? getCriterionDetail(item.criterio) : item.criterio))
     ).length;
     return {
       ...tema,
@@ -71,11 +90,12 @@ export function getCriterionDetail(criterio: string) {
   return criterio.split(" - ")[0] ?? criterio;
 }
 
-export function getCriterionGroupSummary(evidencias: Evidencia[], brechas: Brecha[]): CriterioGrupoResumen[] {
+export function getCriterionGroupSummary(evidencias: Evidencia[], brechas: Brecha[], options: AggregationOptions = {}): CriterioGrupoResumen[] {
   const evidenciasById = new Map(evidencias.map((evidencia) => [evidencia.id, evidencia]));
+  const principles = options.principiosActivos ?? Array.from({ length: 15 }, (_, index) => String(index + 1));
+  const excelMode = options.metodoAgregacion === "resumen-excel";
 
-  return Array.from({ length: 15 }, (_, index) => {
-    const grupo = String(index + 1);
+  return principles.map((grupo) => {
     const groupBrechas = brechas.filter((brecha) => getCriterionRoot(brecha.criterio) === grupo);
     const detailIds = Array.from(new Set(groupBrechas.map((brecha) => getCriterionDetail(brecha.criterio)))).sort((a, b) =>
       a.localeCompare(b, "es", { numeric: true })
@@ -89,7 +109,9 @@ export function getCriterionGroupSummary(evidencias: Evidencia[], brechas: Brech
       return {
         id: detailId,
         grupo,
-        pctPromedio: averageCumplimiento(detailBrechas.map((brecha) => brecha.cumplimiento)),
+        pctPromedio: excelMode
+          ? averageCumplimiento(getAllCriteria(detailBrechas).map((criterion) => getCriterionPct(criterion, detailBrechas)))
+          : averageCumplimiento(detailBrechas.map((brecha) => brecha.cumplimiento)),
         brechas: detailBrechas,
         evidencias: detailEvidencias,
         brechasAbiertas: detailBrechas.filter((brecha) => brecha.plan && brecha.plan !== "Cumple" && brecha.plan !== "NA").length
@@ -99,8 +121,10 @@ export function getCriterionGroupSummary(evidencias: Evidencia[], brechas: Brech
 
     return {
       id: grupo,
-      nombre: `Criterio ${grupo}`,
-      pctPromedio: averageCumplimiento(groupBrechas.map((brecha) => brecha.cumplimiento)),
+      nombre: `Principio ${grupo}`,
+      pctPromedio: excelMode
+        ? averageCumplimiento(detalles.map((detail) => detail.pctPromedio))
+        : averageCumplimiento(groupBrechas.map((brecha) => brecha.cumplimiento)),
       detalles,
       evidenciasCount: evidenceIds.size,
       brechasAbiertas: groupBrechas.filter((brecha) => brecha.plan && brecha.plan !== "Cumple" && brecha.plan !== "NA").length

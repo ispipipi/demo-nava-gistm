@@ -32,8 +32,10 @@ export type ProgressPoint = {
 
 export type ManagementInsights = {
   totalPct: number | null;
-  expectedPct: number;
+  expectedPct: number | null;
   gapPct: number | null;
+  curveAvailable: boolean;
+  warningDatesAvailable: boolean;
   openBrechas: number;
   overdueCount: number;
   upcomingCount: number;
@@ -95,6 +97,7 @@ function getDemoDueDate(today: Date, brecha: Brecha, index: number) {
 }
 
 function buildProgressCurve(project: Proyecto, totalPct: number | null, today: Date) {
+  if (!project.fechaEvaluacion) return [];
   const start = parseDate(project.fechaEvaluacion) ?? new Date(today.getFullYear(), 0, 30);
   const end = new Date(start.getFullYear(), 11, 30);
   const totalDays = Math.max(1, daysBetween(start, end));
@@ -150,7 +153,7 @@ export function getManagementInsights(project: Proyecto, now = new Date()): Mana
   const warnings: ManagementWarning[] = [];
 
   open.forEach((brecha, index) => {
-    const dueDate = getDemoDueDate(today, brecha, index);
+    const dueDate = brecha.fechaCompromiso || (project.fechasCompromisoSinteticas === false ? "" : getDemoDueDate(today, brecha, index));
     const parsed = parseDate(dueDate);
     if (!parsed) return;
     const daysToDue = daysBetween(today, parsed);
@@ -171,18 +174,23 @@ export function getManagementInsights(project: Proyecto, now = new Date()): Mana
 
   warnings.sort((a, b) => a.daysToDue - b.daysToDue);
 
-  const totalPct = getProjectPct(project.brechas);
-  const progressCurve = buildProgressCurve(project, totalPct, today);
+  const totalPct = getProjectPct(project.brechas, project);
+  const curveAvailable = project.serieTemporalDisponible !== false && Boolean(project.fechaEvaluacion);
+  const progressCurve = curveAvailable ? buildProgressCurve(project, totalPct, today) : [];
   const start = parseDate(project.fechaEvaluacion) ?? new Date(today.getFullYear(), 0, 30);
   const end = new Date(start.getFullYear(), 11, 30);
-  const expectedPct = Math.min(1, Math.max(0, daysBetween(start, today) / Math.max(1, daysBetween(start, end))));
-  const groups = getCriterionGroupSummary(project.evidencias, project.brechas);
+  const expectedPct = curveAvailable
+    ? Math.min(1, Math.max(0, daysBetween(start, today) / Math.max(1, daysBetween(start, end))))
+    : null;
+  const groups = getCriterionGroupSummary(project.evidencias, project.brechas, project);
   const visibleWarnings = warnings.slice(0, 9);
 
   return {
     totalPct,
     expectedPct,
-    gapPct: totalPct === null ? null : totalPct - expectedPct,
+    gapPct: totalPct === null || expectedPct === null ? null : totalPct - expectedPct,
+    curveAvailable,
+    warningDatesAvailable: project.fechasCompromisoSinteticas !== false || open.some((brecha) => Boolean(brecha.fechaCompromiso)),
     openBrechas: open.length,
     overdueCount: visibleWarnings.filter((warning) => warning.status === "vencida").length,
     upcomingCount: visibleWarnings.filter((warning) => warning.status === "proxima").length,

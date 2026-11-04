@@ -11,7 +11,7 @@ export function EvidenceRow({ evidencia, pct, criteriaCount }: { evidencia: Evid
       <span className="evidence-id">{String(evidencia.id).padStart(2, "0")}</span>
       <span className="evidence-main">
         <strong>{evidencia.descripcion}</strong>
-        <small>{evidencia.tipo} · {criteriaCount} criterios · responsable: {evidencia.responsable || "Sin asignar"}</small>
+        <small>{evidencia.tipo} · {criteriaCount} requisitos · responsable: {evidencia.responsable || "Sin asignar"}</small>
       </span>
       <span className="progress-cell">
         <span className={`status-badge ${semaforo.className}`}>{semaforo.label}</span>

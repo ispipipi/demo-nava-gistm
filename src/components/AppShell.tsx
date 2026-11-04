@@ -12,7 +12,7 @@ const managementItems: Array<{ view: AppView; label: string; icon: string }> = [
   { view: "avance", label: "Curva de avance", icon: "monitoring" },
   { view: "warnings", label: "Warnings", icon: "notifications" },
   { view: "documentos", label: "Documentos", icon: "folder_open" },
-  { view: "criterios", label: "Criterios críticos", icon: "flag" }
+  { view: "criterios", label: "Principios críticos", icon: "flag" }
 ];
 
 export function AppShell({ project, view, insights, onViewChange, onOpenMentat, children }: {
@@ -27,7 +27,7 @@ export function AppShell({ project, view, insights, onViewChange, onOpenMentat, 
   const viewItems = [...managementItems, { view: "analista" as const, label: "Analista", icon: "fact_check" }];
   const counts: Partial<Record<AppView, string>> = {
     avance: insights.gapPct === null ? "NA" : `${insights.gapPct > 0 ? "+" : ""}${Math.round(insights.gapPct * 100)} pts`,
-    warnings: String(insights.overdueCount),
+    warnings: insights.warningDatesAvailable ? String(insights.overdueCount) : "—",
     documentos: String(insights.pendingDocuments)
   };
   const viewLabel = viewItems.find((item) => item.view === view)?.label ?? "Analista";

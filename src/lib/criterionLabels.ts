@@ -17,5 +17,5 @@ export const criterionLabels: Record<string, string> = {
 };
 
 export function getCriterionLabel(id: string) {
-  return criterionLabels[id] ?? `Criterio ${id}`;
+  return criterionLabels[id] ?? `Principio ${id}`;
 }

@@ -43,7 +43,7 @@ export function ProjectSelector() {
               Cliente minero
               <input value={cliente} onChange={(event) => setCliente(event.target.value)} placeholder="Ej: Minera Norte" autoFocus />
             </label>
-            <p className="helper-text">Se generan las 70 evidencias y sus relaciones base con criterios GISTM en 0%.</p>
+            <p className="helper-text">Se generan las evidencias base y sus relaciones con principios GISTM en 0%.</p>
             <div className="modal-actions">
               <button type="button" className="secondary-action" onClick={() => setOpen(false)}>
                 Cancelar

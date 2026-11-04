@@ -35,10 +35,14 @@ export type Brecha = {
   excelRow?: number;
   evidenciaId: number;
   documento?: string;
+  documentoRecibido?: string;
+  filtro?: string;
   criterio: string;
   cumplimiento: Cumplimiento;
   plan: PlanAccion | null;
   brechaPlan?: string;
+  autor?: string;
+  revisor?: string;
   responsableBrecha?: string;
   fechaCompromiso?: string;
   referenciaDocumental?: string;
@@ -61,6 +65,11 @@ export type Proyecto = {
   nombre: string;
   cliente: string;
   fechaEvaluacion: string;
+  fechaCorte?: string;
+  principiosActivos?: string[];
+  metodoAgregacion?: "relaciones" | "resumen-excel";
+  serieTemporalDisponible?: boolean;
+  fechasCompromisoSinteticas?: boolean;
   evidencias: Evidencia[];
   brechas: Brecha[];
   createdAt: string;

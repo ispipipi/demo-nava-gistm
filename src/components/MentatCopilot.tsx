@@ -13,8 +13,8 @@ type ChatMessage = {
 const initialMessage: ChatMessage = {
   id: 1,
   role: "assistant",
-  text: "Hola, soy Mentat. Puedo responder preguntas sobre avances, criterios, subcriterios, brechas y fichas del proyecto Nava.",
-  source: "Mentat · datos Nava conectados"
+  text: "Hola, soy Mentat. Puedo responder preguntas sobre avances, principios, requisitos, brechas y fichas del proyecto activo.",
+  source: "Mentat · datos del proyecto activo"
 };
 
 function MentatAvatar({ compact = false }: { compact?: boolean }) {
@@ -183,8 +183,8 @@ export function MentatCopilot({ project, open, onOpenChange }: { project: Proyec
           <div className="mentat-panel__suggestions">
             <span>Sugerencias</span>
             <div>
-              <button type="button" onClick={() => askSuggestedQuestion("Cual es el % de avance del criterio 1")}>
-                Criterio 1
+              <button type="button" onClick={() => askSuggestedQuestion("Cual es el % de avance del principio 1")}>
+                Principio 1
               </button>
               <button type="button" onClick={() => askSuggestedQuestion("Que brechas tiene 2.2")}>
                 Brechas 2.2

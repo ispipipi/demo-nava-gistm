@@ -29,7 +29,7 @@ export function FichaPanel({ project, evidenceId }: { project: Proyecto; evidenc
       <div className="drawer-score">
         <span className={`status-badge ${semaforo.className}`}>{semaforo.label}</span>
         <strong>{formatPct(pct)}</strong>
-        <small>{brechas.length} criterios asociados</small>
+        <small>{brechas.length} requisitos asociados</small>
       </div>
 
       <div className="drawer-fields">

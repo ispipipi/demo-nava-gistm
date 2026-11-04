@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 import evidenciasTemplateData from "../data/evidenciasTemplate.json";
 import evidenciaCriterioTemplateData from "../data/evidenciaCriterioTemplate.json";
 import p25006RealData from "../data/p25006.real.json";
+import mmgLasBambasData from "../data/mmg-las-bambas.real.json";
 import temaCriteriosData from "../data/temaCriterios.json";
 import {
   Brecha,
@@ -56,6 +57,11 @@ const evidenciasTemplate = evidenciasTemplateData as EvidenciaTemplate[];
 const evidenciaCriterioTemplate = evidenciaCriterioTemplateData as EvidenciaCriterioTemplate[];
 const p25006Real = p25006RealData as {
   project: Pick<Proyecto, "id" | "nombre" | "cliente" | "fechaEvaluacion">;
+  evidencias: Evidencia[];
+  brechas: Brecha[];
+};
+const mmgLasBambasReal = mmgLasBambasData as {
+  project: Pick<Proyecto, "id" | "nombre" | "cliente" | "fechaEvaluacion" | "fechaCorte" | "principiosActivos" | "metodoAgregacion" | "serieTemporalDisponible" | "fechasCompromisoSinteticas">;
   evidencias: Evidencia[];
   brechas: Brecha[];
 };
@@ -125,12 +131,21 @@ function buildP25006Project(): Proyecto {
   };
 }
 
+function buildMmgLasBambasProject(): Proyecto {
+  return {
+    ...mmgLasBambasReal.project,
+    createdAt: "2026-11-03T12:00:00.000Z",
+    evidencias: mmgLasBambasReal.evidencias,
+    brechas: mmgLasBambasReal.brechas
+  };
+}
+
 function initialState() {
   const navigation = readInitialNavigation();
   return {
     role: navigation.view === "analista" ? ("analista" as Rol) : ("cliente" as Rol),
-    proyectos: [buildP25006Project()],
-    currentProjectId: "p25-006",
+    proyectos: [buildMmgLasBambasProject(), buildP25006Project()],
+    currentProjectId: "mmg-lb-tsf1",
     selectedEvidenceId: null as number | null,
     selectedBrecha: navigation.view === "analista" ? navigation.brecha : null,
     view: navigation.view,
@@ -205,8 +220,8 @@ export const useProjectStore = create<ProjectState>()(
       resetDemo: () => set(initialState())
     }),
     {
-      name: "nava-gistm-demo-v6-safe-navigation",
-      partialize: () => ({})
+      name: "nava-gistm-demo-v7-project-edits",
+      partialize: (state) => ({ proyectos: state.proyectos, currentProjectId: state.currentProjectId })
     }
   )
 );

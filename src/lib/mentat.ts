@@ -1,4 +1,5 @@
 import { getAllCriteria, getCriterionDetail, getCriterionGroupSummary, getCriterionPct, getCriterionRoot, getProjectPct } from "./aggregations";
+import { getCriterionLabel } from "./criterionLabels";
 import { formatPct } from "./semaphore";
 import { Brecha, Proyecto } from "../types";
 
@@ -31,24 +32,6 @@ export type MentatReply = {
 };
 
 const OPEN_PLANS = new Set(["Actualizar", "Modificar", "Recopilar/Elaborar", "No cumple", "Cumple con compromiso", "Cumple con plan"]);
-const GROUP_LABELS: Record<string, string> = {
-  "1": "Base de conocimiento",
-  "2": "Personas y comunidades",
-  "3": "Gobernanza",
-  "4": "Responsabilidades",
-  "5": "Gestion de riesgos",
-  "6": "Mejora continua",
-  "7": "Diseno tecnico",
-  "8": "Operacion",
-  "9": "Emergencias",
-  "10": "Respuesta y preparacion",
-  "11": "Revision y assurance",
-  "12": "Cierre",
-  "13": "Divulgacion",
-  "14": "Trazabilidad",
-  "15": "Aseguramiento externo"
-};
-
 function normalize(value: string) {
   return value
     .toLowerCase()
@@ -63,10 +46,10 @@ function openBrechas(brechas: Brecha[]) {
 
 function findCriterionQuery(query: string) {
   const normalized = normalize(query);
-  const detail = normalized.match(/\b(?:criterio|subcriterio|punto)?\s*(\d{1,2})\.(\d{1,2})\b/);
+  const detail = normalized.match(/\b(?:principio|criterio|requisito|subcriterio|punto)?\s*(\d{1,2})\.(\d{1,2})\b/);
   if (detail) return { group: detail[1], detail: `${detail[1]}.${detail[2]}` };
 
-  const group = normalized.match(/\bcriterio\s+(\d{1,2})\b/) ?? normalized.match(/\bc\s*(\d{1,2})\b/);
+  const group = normalized.match(/\b(?:principio|criterio)\s+(\d{1,2})\b/) ?? normalized.match(/\bp\s*(\d{1,2})\b/) ?? normalized.match(/\bc\s*(\d{1,2})\b/);
   if (group) return { group: group[1], detail: null };
 
   return null;
@@ -118,13 +101,13 @@ function breachRows(project: Proyecto, brechas: Brecha[], limit = 8) {
 }
 
 function answerCriterion(project: Proyecto, criterion: { group: string; detail: string | null }): MentatReply {
-  const summaries = getCriterionGroupSummary(project.evidencias, project.brechas);
+  const summaries = getCriterionGroupSummary(project.evidencias, project.brechas, project);
   const group = summaries.find((item) => item.id === criterion.group);
 
   if (!group) {
     return {
-      text: `No encontre datos para el criterio ${criterion.group}. En este proyecto tengo criterios del 1 al 15.`,
-      source: "Mentat · evaluacion Nava"
+      text: `No encontre datos para el principio ${criterion.group}. Este proyecto tiene disponibles los principios ${summaries.map((item) => item.id).join(", ")}.`,
+      source: `Mentat · ${project.nombre}`
     };
   }
 
@@ -132,17 +115,17 @@ function answerCriterion(project: Proyecto, criterion: { group: string; detail: 
     const detail = group.detalles.find((item) => item.id === criterion.detail);
     if (!detail) {
       return {
-        text: `No encontre brechas asociadas al criterio ${criterion.detail}. El criterio ${criterion.group} tiene: ${group.detalles.map((item) => item.id).join(", ")}.`,
+        text: `No encontre brechas asociadas al requisito ${criterion.detail}. El principio ${criterion.group} incluye: ${group.detalles.map((item) => item.id).join(", ")}.`,
         source: "Mentat · hoja Brechas identificadas"
       };
     }
 
     const opened = openBrechas(detail.brechas);
     return {
-      text: `El criterio ${detail.id} tiene ${formatPct(detail.pctPromedio)} de avance. Registra ${formatNumber(detail.brechas.length)} brechas/fichas asociadas, de las cuales ${formatNumber(opened.length)} quedan abiertas segun el plan de accion.`,
+      text: `El requisito ${detail.id} tiene ${formatPct(detail.pctPromedio)} de avance. Registra ${formatNumber(detail.brechas.length)} brechas/fichas asociadas, de las cuales ${formatNumber(opened.length)} quedan abiertas segun el plan de accion.`,
       source: "Mentat · hoja Brechas identificadas, columna C",
       blocks: [
-        pctBars(`Avance criterio ${detail.id}`, [{ label: detail.id, pct: detail.pctPromedio }]),
+        pctBars(`Avance requisito ${detail.id}`, [{ label: detail.id, pct: detail.pctPromedio }]),
         {
           type: "table",
           title: `Brechas asociadas a ${detail.id}`,
@@ -154,17 +137,17 @@ function answerCriterion(project: Proyecto, criterion: { group: string; detail: 
   }
 
   return {
-    text: `El criterio ${group.id} (${GROUP_LABELS[group.id] ?? group.nombre}) tiene ${formatPct(group.pctPromedio)} de avance. Incluye ${formatNumber(group.detalles.length)} subcriterios, ${formatNumber(group.evidenciasCount)} fichas relacionadas y ${formatNumber(group.brechasAbiertas)} brechas abiertas.`,
-    source: "Mentat · hoja Brechas identificadas",
+    text: `El principio ${group.id} (${getCriterionLabel(group.id)}) tiene ${formatPct(group.pctPromedio)} de avance. Incluye ${formatNumber(group.detalles.length)} requisitos, ${formatNumber(group.evidenciasCount)} fichas relacionadas y ${formatNumber(group.brechasAbiertas)} brechas abiertas.`,
+    source: `Mentat · ${project.nombre}`,
     blocks: [
       pctBars(
-        `Apertura criterio ${group.id}`,
+        `Apertura principio ${group.id}`,
         group.detalles.map((detail) => ({ label: detail.id, pct: detail.pctPromedio }))
       ),
       {
         type: "table",
-        title: `Resumen criterio ${group.id}`,
-        columns: ["Subcriterio", "Avance", "Brechas", "Abiertas"],
+          title: `Resumen principio ${group.id}`,
+          columns: ["Requisito", "Avance", "Brechas", "Abiertas"],
         rows: group.detalles.map((detail) => [
           detail.id,
           formatPct(detail.pctPromedio),
@@ -177,16 +160,16 @@ function answerCriterion(project: Proyecto, criterion: { group: string; detail: 
 }
 
 function answerGlobal(project: Proyecto): MentatReply {
-  const groups = getCriterionGroupSummary(project.evidencias, project.brechas);
-  const pct = getProjectPct(project.brechas);
+  const groups = getCriterionGroupSummary(project.evidencias, project.brechas, project);
+  const pct = getProjectPct(project.brechas, project);
   const opened = openBrechas(project.brechas);
   const weakest = [...groups].sort((a, b) => (a.pctPromedio ?? 1) - (b.pctPromedio ?? 1)).slice(0, 5);
 
   return {
-    text: `El avance total del proyecto es ${formatPct(pct)}. La base contiene ${formatNumber(project.evidencias.length)} evidencias y ${formatNumber(project.brechas.length)} relaciones evidencia-criterio; ${formatNumber(opened.length)} estan abiertas por plan de accion.`,
-    source: "Mentat · resumen calculado desde datos Nava",
+    text: `El avance total del proyecto es ${formatPct(pct)}. La base contiene ${formatNumber(project.evidencias.length)} evidencias y ${formatNumber(project.brechas.length)} relaciones evidencia-requisito; ${formatNumber(opened.length)} estan abiertas por plan de accion.`,
+    source: `Mentat · resumen de ${project.nombre}`,
     blocks: [
-      pctBars("Criterios con menor avance", weakest.map((group) => ({ label: `C${group.id} · ${GROUP_LABELS[group.id] ?? group.nombre}`, pct: group.pctPromedio }))),
+      pctBars("Principios con menor avance", weakest.map((group) => ({ label: `P${group.id} · ${getCriterionLabel(group.id)}`, pct: group.pctPromedio }))),
       {
         type: "table",
         title: "Distribucion por plan de accion",
@@ -206,12 +189,12 @@ function answerOpenBreaches(project: Proyecto): MentatReply {
   const top = byCriterion.sort((a, b) => b.count - a.count || a.criterio.localeCompare(b.criterio, "es", { numeric: true })).slice(0, 8);
 
   return {
-    text: `Hay ${formatNumber(opened.length)} brechas abiertas. Los criterios con mas registros abiertos aparecen abajo, priorizados por volumen.`,
+    text: `Hay ${formatNumber(opened.length)} brechas abiertas. Los requisitos con mas registros abiertos aparecen abajo, priorizados por volumen.`,
     source: "Mentat · planes de accion distintos de Cumple/NA",
     blocks: [
       {
         type: "table",
-        title: "Criterios con mas brechas abiertas",
+        title: "Requisitos con mas brechas abiertas",
         columns: ["Criterio", "Abiertas", "Avance"],
         rows: top.map((item) => [item.criterio, formatNumber(item.count), formatPct(item.pct)])
       },
@@ -242,13 +225,13 @@ function answerEvidence(project: Proyecto, query: string): MentatReply | null {
   const brechas = project.brechas.filter((brecha) => brecha.evidenciaId === evidenciaId);
   const opened = openBrechas(brechas);
   return {
-    text: `La ficha ${String(evidencia.id).padStart(2, "0")} corresponde a "${evidencia.descripcion}". Tiene ${formatNumber(brechas.length)} criterios asociados y ${formatNumber(opened.length)} brechas abiertas.`,
+    text: `La ficha ${String(evidencia.id).padStart(2, "0")} corresponde a "${evidencia.descripcion}". Tiene ${formatNumber(brechas.length)} requisitos asociados y ${formatNumber(opened.length)} brechas abiertas.`,
     source: "Mentat · evidencias y brechas Nava",
     blocks: [
       {
         type: "table",
-        title: `Criterios asociados a ficha ${String(evidencia.id).padStart(2, "0")}`,
-        columns: ["Criterio", "Avance", "Plan", "Responsable"],
+        title: `Requisitos asociados a ficha ${String(evidencia.id).padStart(2, "0")}`,
+        columns: ["Requisito", "Avance", "Plan", "Responsable"],
         rows: brechas.map((brecha) => [
           brecha.criterio,
           formatPct(typeof brecha.cumplimiento === "number" ? brecha.cumplimiento : null),
@@ -273,6 +256,10 @@ function answerSearch(project: Proyecto, query: string): MentatReply | null {
       brecha.plan ?? "",
       brecha.brechaPlan ?? "",
       brecha.documento ?? "",
+      brecha.documentoRecibido ?? "",
+      brecha.filtro ?? "",
+      brecha.autor ?? "",
+      brecha.revisor ?? "",
       brecha.responsableBrecha ?? "",
       evidencia?.descripcion ?? "",
       evidencia?.responsable ?? ""
@@ -284,7 +271,7 @@ function answerSearch(project: Proyecto, query: string): MentatReply | null {
 
   return {
     text: `Encontre ${formatNumber(matches.length)} registros relacionados con tu busqueda. Te muestro los primeros resultados para revisar rapido.`,
-    source: "Mentat · busqueda sobre evidencias, criterios, planes y responsables",
+    source: `Mentat · búsqueda sobre evidencias y brechas de ${project.nombre}`,
     blocks: [
       {
         type: "table",
@@ -310,7 +297,7 @@ export function replyToMentat(query: string, project: Proyecto): MentatReply {
   if (searchAnswer) return searchAnswer;
 
   return {
-    text: "Puedo responder con los datos cargados de Nava. Prueba con: \"cual es el % de avance del criterio 1\", \"que brechas tiene 2.2\", \"cuantas brechas abiertas hay\" o \"que tiene la ficha 09\".",
+    text: "Puedo responder con los datos del proyecto activo. Prueba con: \"cual es el % de avance del principio 1\", \"que brechas tiene el requisito 2.2\", \"cuantas brechas abiertas hay\" o \"que tiene la ficha 09\".",
     source: "Mentat · ayuda"
   };
 }

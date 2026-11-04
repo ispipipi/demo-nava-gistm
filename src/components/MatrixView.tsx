@@ -59,7 +59,7 @@ export function MatrixView({ project }: { project: Proyecto }) {
                 <span>{collapsed ? "▸" : "▾"}</span>
                 <div>
                   <strong>{tema.nombre}</strong>
-                  <small>{evidencias.length} evidencias visibles · {tema.criterios.length} criterios</small>
+                  <small>{evidencias.length} evidencias visibles · {tema.criterios.length} requisitos</small>
                 </div>
                 <span className={`status-badge ${semaforo.className}`}>{formatPct(tema.pctPromedio)}</span>
               </button>
