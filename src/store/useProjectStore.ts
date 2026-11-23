@@ -4,7 +4,7 @@ import evidenciasTemplateData from "../data/evidenciasTemplate.json";
 import evidenciaCriterioTemplateData from "../data/evidenciaCriterioTemplate.json";
 import p25006RealData from "../data/p25006.real.json";
 import mmgLasBambasData from "../data/mmg-las-bambas.real.json";
-import temaCriteriosData from "../data/temaCriterios.json";
+import { gistmTopics } from "../lib/gistmCatalog";
 import {
   Brecha,
   BrechaKey,
@@ -65,7 +65,12 @@ const mmgLasBambasReal = mmgLasBambasData as {
   evidencias: Evidencia[];
   brechas: Brecha[];
 };
-const temas = temaCriteriosData as Tema[];
+const temas: Tema[] = gistmTopics.map((topic) => ({
+  id: topic.id,
+  nombre: topic.name,
+  descripcion: `Topic ${topic.id}`,
+  criterioPrefixes: topic.principles.map((id) => `${id}.`)
+}));
 
 const defaultDashboardFilters: DashboardFilters = {
   warnings: { status: "todos", owner: "Todos" },

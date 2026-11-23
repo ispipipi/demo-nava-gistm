@@ -1,0 +1,58 @@
+.gistm-topic-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.gistm-topic-card { display: flex; min-width: 0; min-height: 180px; flex-direction: column; align-items: stretch; justify-content: space-between; gap: 16px; padding: 20px; border: 1px solid var(--line); border-radius: 8px; background: white; color: var(--ink); text-align: left; }
+.gistm-topic-card:hover { border-color: var(--forest); background: #f9fbfa; }
+.gistm-topic-card__code, .gistm-topic-card__stats { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.gistm-topic-card__code { color: var(--forest); font-size: 15px; font-weight: 600; }
+.gistm-topic-card > strong { font-size: 20px; font-weight: 600; line-height: 1.4; overflow-wrap: anywhere; }
+.gistm-topic-card__stats { color: var(--muted); font-size: 14px; }
+.gistm-principle-list { display: grid; gap: 12px; }
+.gistm-principle-card { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto 20px; align-items: center; gap: 16px; min-height: 104px; padding: 20px; border: 1px solid var(--line); border-radius: 8px; background: white; color: var(--ink); text-align: left; }
+.gistm-principle-card:hover:not(:disabled) { border-color: var(--forest); background: #f9fbfa; }
+.gistm-principle-card:disabled { cursor: default; background: #f1f3f2; color: var(--muted); }
+.gistm-principle-card__code { color: var(--forest); font-size: 18px; font-weight: 700; }
+.gistm-principle-card__copy { display: flex; flex-direction: column; gap: 8px; }
+.gistm-principle-card__copy strong { font-size: 18px; font-weight: 600; line-height: 1.5; overflow-wrap: anywhere; }
+.gistm-principle-card__copy small { color: var(--muted); font-size: 14px; }
+.gistm-topic-filter { max-width: 560px; }
+.gistm-source-text { margin: 14px 0; padding: 12px 14px; border-left: 3px solid var(--forest); background: #edf3f1; color: var(--graphite); }
+.gistm-source-text summary { cursor: pointer; font-size: 15px; font-weight: 600; }
+.gistm-source-text p { margin: 12px 0 0; font-size: 15px; line-height: 1.65; white-space: pre-line; }
+.gistm-criteria-list { display: grid; gap: 12px; }
+.gistm-criterion { overflow: hidden; border: 1px solid var(--line); border-radius: 8px; }
+.gistm-criterion__trigger { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; align-items: center; gap: 10px; width: 100%; min-height: 72px; padding: 14px; border: 0; background: #f9fbfa; color: var(--ink); text-align: left; }
+.gistm-criterion__trigger > span:not(.material-symbol):not(.nava-status) { display: flex; flex-direction: column; gap: 6px; }
+.gistm-criterion__trigger strong { font-size: 16px; font-weight: 600; }
+.gistm-criterion__trigger small { color: var(--muted); font-size: 14px; }
+.gistm-criterion > .nava-associated-brechas { padding: 10px; border-top: 1px solid var(--line); }
+.gistm-ficha-location { margin: 0 0 12px; color: var(--muted); font-size: 13px; line-height: 1.65; }
+.nava-criteria-group__copy > span { align-items: flex-start; flex-direction: column; }
+.nava-criteria-group__copy strong { overflow: visible; white-space: normal; text-overflow: clip; line-height: 1.5; overflow-wrap: anywhere; }
+.nava-criteria-group__trigger { padding-top: 14px; padding-bottom: 14px; }
+.nava-critical-row__main strong, .nava-criterion-tile > strong { white-space: normal; overflow: visible; text-overflow: clip; }
+.nava-analyst:not(.has-brecha) .nava-analyst-grid { grid-template-columns: 320px minmax(0, 1fr); }
+.nava-analyst:not(.has-brecha) .nava-analyst-ficha { display: none; }
+.nava-detail-intro h2 { line-height: 1.5; overflow-wrap: anywhere; }
+.nava-associated-row__copy strong { white-space: normal; }
+.nava-breadcrumbs { gap: 8px; }
+.nava-breadcrumbs button { font-size: 14px; }
+
+@media (max-width: 1199px) {
+  .gistm-topic-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .nava-analyst:not(.has-brecha) .nava-analyst-grid { grid-template-columns: 260px minmax(0, 1fr); }
+  .nava-brecha-panel--analyst { position: relative; z-index: 81; width: 100%; }
+}
+
+@media (max-width: 767px) {
+  .gistm-topic-grid { grid-template-columns: minmax(0, 1fr); }
+  .gistm-topic-card { min-height: 150px; padding: 16px; }
+  .gistm-topic-card > strong { font-size: 18px; }
+  .gistm-principle-card { grid-template-columns: 32px minmax(0, 1fr); gap: 12px; padding: 16px; }
+  .gistm-principle-card__copy strong { font-size: 16px; }
+  .gistm-principle-card > .nava-status { grid-column: 2; justify-self: start; }
+  .gistm-principle-card > .material-symbol { display: none; }
+  .nava-analyst:not(.has-brecha) .nava-analyst-grid { grid-template-columns: minmax(0, 1fr); }
+  .gistm-criterion__trigger { padding: 12px; gap: 8px; }
+  .gistm-criterion__trigger strong { font-size: 15px; }
+  .gistm-criterion__trigger small { font-size: 13px; }
+  .gistm-source-text p { font-size: 14px; }
+}

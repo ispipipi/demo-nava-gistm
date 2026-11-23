@@ -66,7 +66,7 @@ function App() {
   return (
     <AppShell project={project} view={view} insights={insights} onViewChange={setView} onOpenMentat={() => setMentatOpen(true)}>
       {view === "analista" ? (
-        <CriteriaDashboard project={project} onOpenAnalyst={openAnalyst} />
+        <CriteriaDashboard key={project.id} project={project} onOpenAnalyst={openAnalyst} />
       ) : (
         <ManagementDashboard project={project} view={view} onViewChange={setView} onOpenAnalyst={openAnalyst} />
       )}

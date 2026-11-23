@@ -3,6 +3,8 @@ import { formatPct, getSemaphore } from "../lib/semaphore";
 import { useProjectStore } from "../store/useProjectStore";
 import type { Brecha, BrechaKey, Cumplimiento, PlanAccion, Proyecto } from "../types";
 import { DataNotice, MaterialIcon, StatusBadge } from "./ui/primitives";
+import { getCriterionDetail, getCriterionRoot } from "../lib/aggregations";
+import { getTopicForPrinciple } from "../lib/gistmCatalog";
 
 const planOptions: Array<PlanAccion | ""> = ["", "Cumple", "Cumple con compromiso", "Cumple con plan", "Actualizar", "Modificar", "Recopilar/Elaborar", "No cumple", "NA"];
 const pctOptions: Array<Cumplimiento> = [0, 0.25, 0.5, 0.75, 1, "NA"];
@@ -46,6 +48,7 @@ export function BrechaPanel({ project, brechaKey, variant = "drawer", onClose }:
     <aside className={`nava-brecha-panel${variant === "analyst" ? " nava-brecha-panel--analyst" : ""}`} aria-label="Ficha de brecha">
       <header className="nava-ficha-header"><div><p className="nava-eyebrow">Ficha brecha{brecha.excelRow ? ` · Fila Excel ${brecha.excelRow}` : ""}</p><h2>{brecha.criterio} · {evidencia.descripcion}</h2></div><button className="nava-icon-button nava-ficha-close" type="button" onClick={close} aria-label="Cerrar ficha"><MaterialIcon name="close" /></button></header>
       <div className="nava-ficha-scroll">
+        <p className="gistm-ficha-location">Tema {getTopicForPrinciple(getCriterionRoot(brecha.criterio))?.id ?? "—"} · Principle {getCriterionRoot(brecha.criterio)} · Requirement {getCriterionDetail(brecha.criterio)} · Criterio NAVA {brecha.criterio}</p>
         <div className="nava-ficha-score" style={{ backgroundColor: semaforo.bg, color: semaforo.fg }}><StatusBadge value={pct} /><strong>{formatPct(pct)}</strong><span>{brecha.plan ?? "Sin asignar"}</span></div>
         <div className="nava-ficha-fields">
           <label className="nava-field"><span>Criterio</span><input className="nava-field--readonly nava-mono" value={brecha.criterio} readOnly /></label>
