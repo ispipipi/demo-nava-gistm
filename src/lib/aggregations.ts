@@ -2,6 +2,7 @@ import { Brecha, CriterioGrupoResumen, Evidencia, Tema, TemaResumen } from "../t
 
 type AggregationOptions = {
   principiosActivos?: string[];
+  criteriosNava?: string[];
   metodoAgregacion?: "relaciones" | "resumen-excel";
 };
 
@@ -97,7 +98,8 @@ export function getCriterionGroupSummary(evidencias: Evidencia[], brechas: Brech
 
   return principles.map((grupo) => {
     const groupBrechas = brechas.filter((brecha) => getCriterionRoot(brecha.criterio) === grupo);
-    const detailIds = Array.from(new Set(groupBrechas.map((brecha) => getCriterionDetail(brecha.criterio)))).sort((a, b) =>
+    const projectDetailIds = (options.criteriosNava ?? []).filter((criterio) => getCriterionRoot(criterio) === grupo).map(getCriterionDetail);
+    const detailIds = Array.from(new Set([...groupBrechas.map((brecha) => getCriterionDetail(brecha.criterio)), ...projectDetailIds])).sort((a, b) =>
       a.localeCompare(b, "es", { numeric: true })
     );
     const detalles = detailIds.map((detailId) => {

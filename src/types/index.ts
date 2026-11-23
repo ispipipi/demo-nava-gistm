@@ -8,8 +8,8 @@ export type PlanAccion =
   | "No cumple"
   | "NA";
 export type SemaforoEstado = "verde" | "amarillo" | "naranjo" | "rojo" | "gris";
-export type Rol = "analista" | "cliente";
-export type Cumplimiento = number | "NA";
+export type Rol = "analista" | "senior" | "cliente";
+export type Cumplimiento = number | "NA" | null;
 
 export type TipoEvidencia = "ADM/RRHH" | "GOB" | "POL" | "S&A" | "TEC" | "TKB";
 
@@ -31,6 +31,13 @@ export type EvidenciaCriterioTemplate = {
   criterios: string[];
 };
 
+export type SeguimientoBrecha = {
+  id: string;
+  autor: string;
+  comentario: string;
+  fecha: string;
+};
+
 export type Brecha = {
   excelRow?: number;
   evidenciaId: number;
@@ -46,6 +53,7 @@ export type Brecha = {
   responsableBrecha?: string;
   fechaCompromiso?: string;
   referenciaDocumental?: string;
+  seguimientos?: SeguimientoBrecha[];
 };
 
 export type BrechaKey = {
@@ -67,9 +75,11 @@ export type Proyecto = {
   fechaEvaluacion: string;
   fechaCorte?: string;
   principiosActivos?: string[];
+  criteriosNava?: string[];
   metodoAgregacion?: "relaciones" | "resumen-excel";
   serieTemporalDisponible?: boolean;
   fechasCompromisoSinteticas?: boolean;
+  liberacionesPrincipio?: Record<string, { liberado: boolean; fecha: string | null; actor: string | null }>;
   evidencias: Evidencia[];
   brechas: Brecha[];
   createdAt: string;

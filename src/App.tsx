@@ -4,18 +4,21 @@ import { CriteriaDashboard } from "./components/CriteriaDashboard";
 import { FichaPanel } from "./components/FichaPanel";
 import { ManagementDashboard } from "./components/ManagementDashboard";
 import { MentatCopilot } from "./components/MentatCopilot";
+import { SeniorReview } from "./components/SeniorReview";
 import { useProjectStore } from "./store/useProjectStore";
 import { getCriterionDetail, getCriterionGroupSummary, getCriterionRoot } from "./lib/aggregations";
 import { getManagementInsights } from "./lib/managementDashboard";
+import { getProjectForRole } from "./lib/principleRelease";
 import type { BrechaKey } from "./types";
 
 function App() {
   const {
-    proyectos, currentProjectId, selectedEvidenceId, selectedBrecha, view,
+    proyectos, currentProjectId, selectedEvidenceId, selectedBrecha, view, role,
     analystCriterion, analystSubcriterion, setView, setAnalystLocation, selectBrecha, selectEvidence
   } = useProjectStore();
   const project = proyectos.find((item) => item.id === currentProjectId) ?? proyectos[0];
-  const insights = useMemo(() => getManagementInsights(project), [project]);
+  const visibleProject = useMemo(() => getProjectForRole(project, role), [project, role]);
+  const insights = useMemo(() => getManagementInsights(visibleProject), [visibleProject]);
   const groups = useMemo(() => getCriterionGroupSummary(project.evidencias, project.brechas, project), [project]);
   const [mentatOpen, setMentatOpen] = useState(false);
 
@@ -64,13 +67,15 @@ function App() {
   const validSelectedEvidenceId = typeof selectedEvidenceId === "number" && project.evidencias.some((item) => item && item.id === selectedEvidenceId);
 
   return (
-    <AppShell project={project} view={view} insights={insights} onViewChange={setView} onOpenMentat={() => setMentatOpen(true)}>
-      {view === "analista" ? (
+    <AppShell project={project} role={role} view={view} insights={insights} onViewChange={setView} onOpenMentat={() => setMentatOpen(true)}>
+      {view === "revision" ? (
+        <SeniorReview project={project} />
+      ) : view === "analista" ? (
         <CriteriaDashboard key={project.id} project={project} onOpenAnalyst={openAnalyst} />
       ) : (
-        <ManagementDashboard project={project} view={view} onViewChange={setView} onOpenAnalyst={openAnalyst} />
+        <ManagementDashboard project={visibleProject} role={role} view={view} onViewChange={setView} onOpenAnalyst={openAnalyst} />
       )}
-      <MentatCopilot project={project} open={mentatOpen} onOpenChange={setMentatOpen} />
+      <MentatCopilot project={visibleProject} open={mentatOpen} onOpenChange={setMentatOpen} />
       {view === "analista" && validSelectedEvidenceId && <FichaPanel project={project} evidenceId={selectedEvidenceId as number} />}
     </AppShell>
   );

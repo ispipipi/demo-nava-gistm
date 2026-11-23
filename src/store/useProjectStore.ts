@@ -13,10 +13,11 @@ import {
   EvidenciaTemplate,
   Proyecto,
   Rol,
+  SeguimientoBrecha,
   Tema
 } from "../types";
 
-export type AppView = "resumen" | "avance" | "warnings" | "documentos" | "criterios" | "analista";
+export type AppView = "resumen" | "avance" | "warnings" | "operacion" | "reporte" | "documentos" | "criterios" | "revision" | "analista";
 export type WarningFilter = "todos" | "vencida" | "proxima";
 export type DocumentAvailabilityFilter = "todos" | "Si" | "No" | "NA" | "sin-informar" | "pendientes";
 export type ProgressSeries = "ambas" | "real" | "esperado";
@@ -50,6 +51,11 @@ type ProjectState = {
   toggleTheme: (themeId: string) => void;
   updateEvidence: (projectId: string, evidenceId: number, patch: Partial<Evidencia>) => void;
   updateBrecha: (projectId: string, evidenciaId: number, criterio: string, patch: Partial<Brecha>) => void;
+  releasePrinciple: (projectId: string, principleId: string) => void;
+  markPrinciplePending: (projectId: string, principleId: string) => void;
+  addBrecha: (projectId: string, evidenciaId: number, criterio: string) => void;
+  removeBrecha: (projectId: string, evidenciaId: number, criterio: string) => void;
+  addBrechaFollowup: (projectId: string, evidenciaId: number, criterio: string, followup: Pick<SeguimientoBrecha, "autor" | "comentario">) => void;
   resetDemo: () => void;
 };
 
@@ -82,7 +88,7 @@ function readInitialNavigation() {
   if (typeof window === "undefined") return { view: "resumen" as AppView, criterion: null, subcriterion: null, brecha: null };
   const params = new URLSearchParams(window.location.search);
   const requestedView = params.get("vista") as AppView | null;
-  const view: AppView = requestedView && ["resumen", "avance", "warnings", "documentos", "criterios", "analista"].includes(requestedView)
+  const view: AppView = requestedView && ["resumen", "avance", "warnings", "operacion", "reporte", "documentos", "criterios", "revision", "analista"].includes(requestedView)
     ? requestedView
     : "resumen";
   const code = params.get("c") ?? "";
@@ -94,6 +100,18 @@ function readInitialNavigation() {
   const criterio = separator > 0 ? evidenceParam.slice(separator + 1) : "";
   const brecha = Number.isInteger(evidenceId) && evidenceId > 0 && criterio ? { evidenciaId: evidenceId, criterio } : null;
   return { view, criterion, subcriterion, brecha };
+}
+
+function principleOf(criterion: string) {
+  return criterion.match(/^(\d{1,2})/)?.[1] ?? null;
+}
+
+function withPrinciplePending(project: Proyecto, principleIds: string[]) {
+  const releases = { ...(project.liberacionesPrincipio ?? {}) };
+  for (const principleId of principleIds) {
+    if (releases[principleId]?.liberado) releases[principleId] = { liberado: false, fecha: null, actor: null };
+  }
+  return { ...project, liberacionesPrincipio: releases };
 }
 
 function relationTemplates() {
@@ -115,6 +133,7 @@ function buildBlankProject(cliente: string): Proyecto {
     fechaEvaluacion: now.slice(0, 10),
     createdAt: now,
     evidencias: evidenciasTemplate.map((item) => ({ ...item, responsable: "", disponible: "", referenciaDocumental: "" })),
+    criteriosNava: Array.from(new Set(relationTemplates().map((item) => item.criterio))),
     brechas: relationTemplates().map((item) => ({
       ...item,
       cumplimiento: 0,
@@ -132,6 +151,7 @@ function buildP25006Project(): Proyecto {
     ...p25006Real.project,
     createdAt: "2026-01-30T12:00:00.000Z",
     evidencias: p25006Real.evidencias,
+    criteriosNava: Array.from(new Set(p25006Real.brechas.map((item) => item.criterio))),
     brechas: p25006Real.brechas
   };
 }
@@ -141,6 +161,7 @@ function buildMmgLasBambasProject(): Proyecto {
     ...mmgLasBambasReal.project,
     createdAt: "2026-11-03T12:00:00.000Z",
     evidencias: mmgLasBambasReal.evidencias,
+    criteriosNava: Array.from(new Set(mmgLasBambasReal.brechas.map((item) => item.criterio))),
     brechas: mmgLasBambasReal.brechas
   };
 }
@@ -148,7 +169,7 @@ function buildMmgLasBambasProject(): Proyecto {
 function initialState() {
   const navigation = readInitialNavigation();
   return {
-    role: navigation.view === "analista" ? ("analista" as Rol) : ("cliente" as Rol),
+    role: navigation.view === "analista" ? ("analista" as Rol) : navigation.view === "revision" ? ("senior" as Rol) : ("cliente" as Rol),
     proyectos: [buildMmgLasBambasProject(), buildP25006Project()],
     currentProjectId: "mmg-lb-tsf1",
     selectedEvidenceId: null as number | null,
@@ -166,8 +187,8 @@ export const useProjectStore = create<ProjectState>()(
   persist(
     (set) => ({
       ...initialState(),
-      setRole: (role) => set({ role, view: role === "analista" ? "analista" : "resumen", selectedEvidenceId: null, selectedBrecha: null }),
-      setView: (view) => set({ view, role: view === "analista" ? "analista" : "cliente" }),
+      setRole: (role) => set({ role, view: role === "analista" ? "analista" : role === "senior" ? "revision" : "resumen", selectedEvidenceId: null, selectedBrecha: null }),
+      setView: (view) => set((state) => ({ view, role: view === "revision" ? "senior" : view === "analista" ? state.role === "senior" ? "senior" : "analista" : state.role === "senior" ? "senior" : "cliente" })),
       setAnalystLocation: (criterion, subcriterion = null) => set({ analystCriterion: criterion, analystSubcriterion: subcriterion }),
       setDashboardFilters: (patch) => set((state) => ({
         dashboardFilters: {
@@ -203,7 +224,7 @@ export const useProjectStore = create<ProjectState>()(
           proyectos: state.proyectos.map((project) =>
             project.id === projectId
               ? {
-                  ...project,
+                  ...withPrinciplePending(project, project.brechas.filter((item) => item.evidenciaId === evidenceId).map((item) => principleOf(item.criterio)).filter((item): item is string => item !== null)),
                   evidencias: project.evidencias.map((evidencia) => (evidencia.id === evidenceId ? { ...evidencia, ...patch } : evidencia))
                 }
               : project
@@ -214,13 +235,75 @@ export const useProjectStore = create<ProjectState>()(
           proyectos: state.proyectos.map((project) =>
             project.id === projectId
               ? {
-                  ...project,
+                  ...withPrinciplePending(project, [principleOf(criterio)].filter((item): item is string => item !== null)),
                   brechas: project.brechas.map((brecha) =>
                     brecha.evidenciaId === evidenciaId && brecha.criterio === criterio ? { ...brecha, ...patch } : brecha
                   )
                 }
               : project
           )
+        })),
+      releasePrinciple: (projectId, principleId) =>
+        set((state) => ({
+          proyectos: state.proyectos.map((project) => project.id === projectId
+            ? { ...project, liberacionesPrincipio: { ...(project.liberacionesPrincipio ?? {}), [principleId]: { liberado: true, fecha: new Date().toISOString(), actor: "Senior (demo)" } } }
+            : project)
+        })),
+      markPrinciplePending: (projectId, principleId) =>
+        set((state) => ({
+          proyectos: state.proyectos.map((project) => project.id === projectId
+            ? withPrinciplePending(project, [principleId])
+            : project)
+        })),
+      addBrecha: (projectId, evidenciaId, criterio) =>
+        set((state) => ({
+          proyectos: state.proyectos.map((project) => {
+            if (project.id !== projectId || project.brechas.some((brecha) => brecha.evidenciaId === evidenciaId && brecha.criterio === criterio)) return project;
+            const evidencia = project.evidencias.find((item) => item.id === evidenciaId);
+            if (!evidencia) return project;
+            return {
+              ...project,
+              ...withPrinciplePending(project, [principleOf(criterio)].filter((item): item is string => item !== null)),
+              criteriosNava: Array.from(new Set([...(project.criteriosNava ?? project.brechas.map((brecha) => brecha.criterio)), criterio])),
+              brechas: [...project.brechas, {
+                evidenciaId,
+                documento: evidencia.descripcion,
+                criterio,
+                cumplimiento: null,
+                plan: null,
+                brechaPlan: "",
+                responsableBrecha: "",
+                fechaCompromiso: "",
+                referenciaDocumental: ""
+              }]
+            };
+          })
+        })),
+      removeBrecha: (projectId, evidenciaId, criterio) =>
+        set((state) => ({
+          proyectos: state.proyectos.map((project) => project.id === projectId
+              ? {
+                ...project,
+                ...withPrinciplePending(project, [principleOf(criterio)].filter((item): item is string => item !== null)),
+                criteriosNava: project.criteriosNava ?? Array.from(new Set(project.brechas.map((brecha) => brecha.criterio))),
+                brechas: project.brechas.filter((brecha) => !(brecha.evidenciaId === evidenciaId && brecha.criterio === criterio))
+              }
+            : project),
+          selectedBrecha: state.currentProjectId === projectId && state.selectedBrecha?.evidenciaId === evidenciaId && state.selectedBrecha.criterio === criterio
+            ? null
+            : state.selectedBrecha
+        })),
+      addBrechaFollowup: (projectId, evidenciaId, criterio, followup) =>
+        set((state) => ({
+          proyectos: state.proyectos.map((project) => project.id === projectId
+              ? {
+                ...project,
+                ...withPrinciplePending(project, [principleOf(criterio)].filter((item): item is string => item !== null)),
+                brechas: project.brechas.map((brecha) => brecha.evidenciaId === evidenciaId && brecha.criterio === criterio
+                  ? { ...brecha, seguimientos: [...(brecha.seguimientos ?? []), { ...followup, id: crypto.randomUUID(), fecha: new Date().toISOString() }] }
+                  : brecha)
+              }
+            : project)
         })),
       resetDemo: () => set(initialState())
     }),

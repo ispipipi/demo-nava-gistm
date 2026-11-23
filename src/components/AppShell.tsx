@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import type { ManagementInsights } from "../lib/managementDashboard";
 import type { AppView } from "../store/useProjectStore";
-import type { Proyecto } from "../types";
+import type { Proyecto, Rol } from "../types";
 import { MaterialIcon } from "./ui/primitives";
 import { ProjectSelector } from "./ProjectSelector";
 import { TopBar } from "./TopBar";
@@ -11,12 +11,15 @@ const managementItems: Array<{ view: AppView; label: string; icon: string }> = [
   { view: "resumen", label: "Resumen gerencial", icon: "space_dashboard" },
   { view: "avance", label: "Curva de avance", icon: "monitoring" },
   { view: "warnings", label: "Warnings", icon: "notifications" },
+  { view: "operacion", label: "Bandeja operativa", icon: "assignment_late" },
+  { view: "reporte", label: "Reporte semanal", icon: "summarize" },
   { view: "documentos", label: "Documentos", icon: "folder_open" },
   { view: "criterios", label: "Principios críticos", icon: "flag" }
 ];
 
-export function AppShell({ project, view, insights, onViewChange, onOpenMentat, children }: {
+export function AppShell({ project, role, view, insights, onViewChange, onOpenMentat, children }: {
   project: Proyecto;
+  role: Rol;
   view: AppView;
   insights: ManagementInsights;
   onViewChange: (view: AppView) => void;
@@ -25,10 +28,11 @@ export function AppShell({ project, view, insights, onViewChange, onOpenMentat, 
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const isMmgProject = project.id === "mmg-lb-tsf1";
-  const viewItems = [...managementItems, { view: "analista" as const, label: "Analista", icon: "fact_check" }];
+  const viewItems = [...managementItems, ...(role === "senior" ? [{ view: "revision" as const, label: "Revisión senior", icon: "verified_user" }] : [])];
   const counts: Partial<Record<AppView, string>> = {
     avance: insights.gapPct === null ? "NA" : `${insights.gapPct > 0 ? "+" : ""}${Math.round(insights.gapPct * 100)} pts`,
     warnings: insights.warningDatesAvailable ? String(insights.overdueCount) : "—",
+    operacion: String(insights.openBrechas),
     documentos: String(insights.pendingDocuments)
   };
   const viewLabel = viewItems.find((item) => item.view === view)?.label ?? "Analista";
@@ -66,14 +70,15 @@ export function AppShell({ project, view, insights, onViewChange, onOpenMentat, 
                 {counts[item.view] && <b className={item.view === "warnings" && insights.overdueCount > 0 ? "is-risk" : ""}>{counts[item.view]}</b>}
               </button>
             ))}
+            {role === "senior" && <button type="button" title="Revisión senior" aria-current={view === "revision" ? "page" : undefined} className={view === "revision" ? "is-active" : ""} onClick={() => navigate("revision")}><MaterialIcon name="verified_user" /><span>Revisión senior</span></button>}
           </nav>
-          <p className="nava-sidebar__section nava-sidebar__section--work">Trabajo <span>Edición</span></p>
+          {role !== "cliente" && <><p className="nava-sidebar__section nava-sidebar__section--work">Trabajo <span>Edición</span></p>
           <nav className="nava-sidebar__nav">
             <button type="button" title="Analista" aria-current={view === "analista" ? "page" : undefined} className={view === "analista" ? "is-active" : ""} onClick={() => navigate("analista")}>
               <MaterialIcon name="fact_check" />
               <span>Analista</span>
             </button>
-          </nav>
+          </nav></>}
           <div className="nava-sidebar__footer">
             <button type="button" onClick={onOpenMentat} title="Preguntar a Mentat">
               <MaterialIcon name="forum" /><span>Preguntar a Mentat</span>

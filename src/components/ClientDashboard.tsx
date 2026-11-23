@@ -1,6 +1,7 @@
 import { Proyecto } from "../types";
 import { ManagementDashboard } from "./ManagementDashboard";
 import { useProjectStore } from "../store/useProjectStore";
+import { getProjectForRole } from "../lib/principleRelease";
 
 export function ClientDashboard({ project }: { project: Proyecto }) {
   const setView = useProjectStore((state) => state.setView);
@@ -11,5 +12,5 @@ export function ClientDashboard({ project }: { project: Proyecto }) {
     selectBrecha(brecha ?? null);
     setView("analista");
   }
-  return <ManagementDashboard project={project} view="resumen" onViewChange={setView} onOpenAnalyst={openAnalyst} />;
+  return <ManagementDashboard project={getProjectForRole(project, "cliente")} role="cliente" view="resumen" onViewChange={setView} onOpenAnalyst={openAnalyst} />;
 }

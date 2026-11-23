@@ -11,7 +11,7 @@ export function TopBar({ project, view, viewLabel, onOpenMenu, onOpenMentat }: {
   onOpenMenu: () => void;
   onOpenMentat: () => void;
 }) {
-  const resetDemo = useProjectStore((state) => state.resetDemo);
+  const { resetDemo, role, setRole } = useProjectStore();
   const isMmgProject = project.id === "mmg-lb-tsf1";
   const cutoff = project.fechaCorte || (project.fechaEvaluacion
     ? new Intl.DateTimeFormat("es-CL", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(`${project.fechaEvaluacion}T12:00:00`))
@@ -31,7 +31,7 @@ export function TopBar({ project, view, viewLabel, onOpenMenu, onOpenMentat }: {
       </div>
       <div className="nava-topbar__actions">
         <span className="nava-topbar__cut"><MaterialIcon name="calendar_today" />Corte · {cutoff}</span>
-        <span className="nava-role-chip"><MaterialIcon name={view === "analista" ? "edit_note" : "visibility"} />{view === "analista" ? "Analista" : "Gerencia · lectura"}</span>
+        <label className="nava-role-chip" aria-label="Perfil simulado del demo"><MaterialIcon name={role === "analista" ? "edit_note" : role === "senior" ? "verified_user" : "visibility"} /><select value={role} onChange={(event) => setRole(event.target.value as "analista" | "senior" | "cliente")} aria-label="Cambiar perfil del demo"><option value="cliente">Cliente · lectura</option><option value="senior">Senior · revisión</option><option value="analista">Analista · edición</option></select></label>
         <button className="nava-mentat-action" type="button" onClick={onOpenMentat}><MaterialIcon name="forum" /><span>Mentat</span></button>
         <button className="icon-action nava-reset-action" title="Reiniciar demo" onClick={resetDemo} aria-label="Reiniciar demo"><MaterialIcon name="refresh" /></button>
       </div>

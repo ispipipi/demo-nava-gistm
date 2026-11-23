@@ -2,6 +2,19 @@ import { averageCumplimiento, getCriterionGroupSummary, getProjectPct } from "./
 import type { Brecha, Evidencia, Proyecto } from "../types";
 
 export type WarningStatus = "vencida" | "proxima";
+export type ManagementTaskStatus = WarningStatus | "programada" | "sin-fecha";
+
+export type ManagementTask = {
+  id: string;
+  criterio: string;
+  evidenciaId: number;
+  evidencia: string;
+  owner: string;
+  plan: string;
+  dueDate: string | null;
+  daysToDue: number | null;
+  status: ManagementTaskStatus;
+};
 
 export type ManagementWarning = {
   id: string;
@@ -87,6 +100,31 @@ function daysBetween(from: Date, to: Date) {
 
 function getOwner(evidencia?: Evidencia, brecha?: Brecha) {
   return brecha?.responsableBrecha || evidencia?.responsable || OWNER_BY_TYPE[evidencia?.tipo ?? ""] || "Sin responsable";
+}
+
+export function getOpenManagementTasks(project: Proyecto, now = new Date()): ManagementTask[] {
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const evidenciasById = new Map(project.evidencias.map((evidencia) => [evidencia.id, evidencia]));
+  const tasks = openBrechas(project.brechas).map((brecha): ManagementTask => {
+    const dueDate = brecha.fechaCompromiso?.trim() || null;
+    const parsed = dueDate ? parseDate(dueDate) : null;
+    const daysToDue = parsed ? daysBetween(today, parsed) : null;
+    const status: ManagementTaskStatus = daysToDue === null ? "sin-fecha" : daysToDue < 0 ? "vencida" : daysToDue <= 21 ? "proxima" : "programada";
+    const evidencia = evidenciasById.get(brecha.evidenciaId);
+    return {
+      id: `${brecha.evidenciaId}-${brecha.criterio}`,
+      criterio: brecha.criterio,
+      evidenciaId: brecha.evidenciaId,
+      evidencia: evidencia?.descripcion ?? brecha.documento ?? "Evidencia sin nombre",
+      owner: getOwner(evidencia, brecha),
+      plan: brecha.plan ?? "Sin plan",
+      dueDate,
+      daysToDue,
+      status
+    };
+  });
+  const priority: Record<ManagementTaskStatus, number> = { vencida: 0, proxima: 1, "sin-fecha": 2, programada: 3 };
+  return tasks.sort((a, b) => priority[a.status] - priority[b.status] || (a.daysToDue ?? Number.MAX_SAFE_INTEGER) - (b.daysToDue ?? Number.MAX_SAFE_INTEGER) || a.owner.localeCompare(b.owner, "es"));
 }
 
 function getDemoDueDate(today: Date, brecha: Brecha, index: number) {
@@ -183,7 +221,6 @@ export function getManagementInsights(project: Proyecto, now = new Date()): Mana
     ? Math.min(1, Math.max(0, daysBetween(start, today) / Math.max(1, daysBetween(start, end))))
     : null;
   const groups = getCriterionGroupSummary(project.evidencias, project.brechas, project);
-  const visibleWarnings = warnings.slice(0, 9);
 
   return {
     totalPct,
@@ -192,10 +229,10 @@ export function getManagementInsights(project: Proyecto, now = new Date()): Mana
     curveAvailable,
     warningDatesAvailable: project.fechasCompromisoSinteticas !== false || open.some((brecha) => Boolean(brecha.fechaCompromiso)),
     openBrechas: open.length,
-    overdueCount: visibleWarnings.filter((warning) => warning.status === "vencida").length,
-    upcomingCount: visibleWarnings.filter((warning) => warning.status === "proxima").length,
+    overdueCount: warnings.filter((warning) => warning.status === "vencida").length,
+    upcomingCount: warnings.filter((warning) => warning.status === "proxima").length,
     pendingDocuments: project.evidencias.filter((evidencia) => evidencia.disponible === "No" || evidencia.disponible === "").length,
-    warnings: visibleWarnings,
+    warnings,
     documentOwners: buildDocumentOwners(project),
     progressCurve,
     weakCriteria: [...groups]

@@ -5,9 +5,10 @@ import { gistmTopics } from "../lib/gistmCatalog";
 import { formatPct } from "../lib/semaphore";
 import { Breadcrumbs, MaterialIcon, StatusBadge } from "./ui/primitives";
 
-export function GistmTopicExplorer({ groups, onOpenPrinciple }: {
+export function GistmTopicExplorer({ groups, onOpenPrinciple, readOnly = false }: {
   groups: ReturnType<typeof getCriterionGroupSummary>;
   onOpenPrinciple: (id: string) => void;
+  readOnly?: boolean;
 }) {
   const [topicId, setTopicId] = useState<string | null>(null);
   const activeTopic = gistmTopics.find((topic) => topic.id === topicId);
@@ -30,7 +31,7 @@ export function GistmTopicExplorer({ groups, onOpenPrinciple }: {
       </button>;
     })}</div> : <div className="gistm-principle-list">{activeTopic.principles.map((id) => {
       const group = visibleGroups.find((item) => item.id === id);
-      return <button key={id} type="button" disabled={!group} className="gistm-principle-card" onClick={() => onOpenPrinciple(id)}>
+      return <button key={id} type="button" disabled={!group || readOnly} className="gistm-principle-card" onClick={() => onOpenPrinciple(id)}>
         <span className="gistm-principle-card__code">P{id}</span><span className="gistm-principle-card__copy"><strong lang="en">{getCriterionLabel(id)}</strong><small>{group ? `${group.detalles.length} requisitos · ${group.brechasAbiertas} relaciones abiertas` : "Sin datos cargados"}</small></span>
         {group && <><StatusBadge value={group.pctPromedio} label={formatPct(group.pctPromedio)} /><MaterialIcon name="chevron_right" /></>}
       </button>;

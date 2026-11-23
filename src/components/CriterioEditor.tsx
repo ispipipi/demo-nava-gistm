@@ -13,7 +13,7 @@ const planOptions: Array<PlanAccion | ""> = [
   "No cumple",
   "NA"
 ];
-const pctOptions: Array<Cumplimiento> = [0, 0.25, 0.5, 0.75, 1, "NA"];
+const pctOptions: Array<Cumplimiento> = [null, 0, 0.25, 0.5, 0.75, 1, "NA"];
 
 export function CriterioEditor({ projectId, brecha }: { projectId: string; brecha: Brecha }) {
   const updateBrecha = useProjectStore((state) => state.updateBrecha);
@@ -27,15 +27,15 @@ export function CriterioEditor({ projectId, brecha }: { projectId: string; brech
           <p className="eyebrow">Criterio</p>
           <strong>{brecha.criterio}</strong>
         </div>
-        <span className={`status-badge ${semaforo.className}`}>{formatPct(numericPct)}</span>
+        <span className={`status-badge ${semaforo.className}`}>{brecha.cumplimiento === null ? "Sin evaluar" : formatPct(numericPct)}</span>
       </div>
       <div className="criterion-grid">
         <label className="field-label">
           Cumplimiento
           <select
-            value={String(brecha.cumplimiento)}
+            value={String(brecha.cumplimiento ?? "")}
             onChange={(event) => {
-              const nextValue = event.target.value === "NA" ? "NA" : Number(event.target.value);
+              const nextValue: Cumplimiento = event.target.value === "" ? null : event.target.value === "NA" ? "NA" : Number(event.target.value);
               updateBrecha(projectId, brecha.evidenciaId, brecha.criterio, {
                 cumplimiento: nextValue,
                 plan: nextValue === "NA" ? "NA" : brecha.plan
@@ -43,8 +43,8 @@ export function CriterioEditor({ projectId, brecha }: { projectId: string; brech
             }}
           >
             {pctOptions.map((item) => (
-              <option key={String(item)} value={String(item)}>
-                {item === "NA" ? "NA" : `${Math.round(item * 100)}%`}
+              <option key={String(item)} value={String(item ?? "")}>
+                {item === null ? "Sin evaluar" : item === "NA" ? "NA" : `${Math.round(item * 100)}%`}
               </option>
             ))}
           </select>
